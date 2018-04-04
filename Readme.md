@@ -10,7 +10,7 @@ When I want to share the Azure Function code, it usualy require to set up other 
 
 NOTE: This repo is under construction. Now I'm start working it. 
 
-I'd like to install just one command. 
+I'd like to install everything in just one command. 
 
 ```
 strikes init 
