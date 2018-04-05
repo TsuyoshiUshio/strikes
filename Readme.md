@@ -12,7 +12,7 @@ NOTE: This repo is under construction. Now I'm start working it.
 
 I'd like to install everything in just one command. 
 
-## intialize
+## initialize
 
 These command install / Setup Lightning Strikes.
 
