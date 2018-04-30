@@ -2,6 +2,22 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/hashicorp/hcl"
+  packages = [
+    ".",
+    "hcl/ast",
+    "hcl/parser",
+    "hcl/scanner",
+    "hcl/strconv",
+    "hcl/token",
+    "json/parser",
+    "json/scanner",
+    "json/token"
+  ]
+  revision = "ef8a98b0bbce4a65b5aa4c368430a80ddc533168"
+
+[[projects]]
   name = "github.com/urfave/cli"
   packages = ["."]
   revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
@@ -10,6 +26,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "dc31bf18b10af3b28727eb5be721811713c44bfc4ac5f49047e4ce7829f998a2"
+  inputs-digest = "f2087c1c361b86c287801828556db4b86094f7ab7580a25d47adb533d15aa0af"
   solver-name = "gps-cdcl"
   solver-version = 1
