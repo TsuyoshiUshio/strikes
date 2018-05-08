@@ -4,7 +4,9 @@
 [[projects]]
   name = "github.com/Azure/azure-sdk-for-go"
   packages = [
+    "services/resources/mgmt/2018-02-01/resources",
     "services/storage/mgmt/2017-06-01/storage",
+    "storage",
     "version"
   ]
   revision = "4650843026a7fdec254a8d9cf893693a254edd0b"
@@ -37,6 +39,18 @@
   revision = "6c6132ff69f0f6c088739067407b5d32c52e1d0f"
 
 [[projects]]
+  name = "github.com/marstr/guid"
+  packages = ["."]
+  revision = "8bd9a64bf37eb297b492a4101fb28e80ac0b290f"
+  version = "v1.1.0"
+
+[[projects]]
+  name = "github.com/satori/go.uuid"
+  packages = ["."]
+  revision = "f58768cc1a7a7e77a3bd49e98cdd21419399b6a3"
+  version = "v1.2.0"
+
+[[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
   packages = [
@@ -48,6 +62,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b0c5f9ce0f7e25802f697fe43fa6f0a5fa6dc714b5d678044418a13e487f6352"
+  inputs-digest = "bc4fb875635b5679105baf92941e5801736920f0e4b2119ba2b09747170b2447"
   solver-name = "gps-cdcl"
   solver-version = 1
