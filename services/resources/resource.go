@@ -11,10 +11,10 @@ import (
 	"github.com/TsuyoshiUshio/strikes/helpers"
 )
 
-func CreateDefaultResourceGroup(authorizer autorest.Authorizer, location string) error {
+func CreateDefaultResourceGroup(authorizer autorest.Authorizer, location string) (string, error) {
 	authInfo, err := helpers.ReadJson(os.Getenv(helpers.AZURE_AUTH_LOCATION))
 	if err != nil {
-		return err
+		return "", err
 	}
 	client := resourceGroup.NewGroupsClient((*authInfo)["subscriptionId"])
 	client.Authorizer = authorizer
@@ -31,7 +31,7 @@ func CreateDefaultResourceGroup(authorizer autorest.Authorizer, location string)
 	_, err = client.CreateOrUpdate(ctx, resourceGroupName, parameters)
 	if err != nil {
 		log.Fatalf("ResourceGroup creation failed. %s\n", resourceGroupName)
-		return err
+		return "", err
 	}
-	return nil
+	return resourceGroupName, nil
 }

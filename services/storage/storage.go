@@ -67,7 +67,6 @@ func CreateStorageAccountIfNotExists(authorizer autorest.Authorizer, name string
 	}
 
 	return keysResult.Keys, nil
-	// createTableIfNotExists(DEFAULT_STORAGE_TABLE_NAME, name, *accessKeys[0].Value)
 }
 
 func CreateTableIfNotExists(tableName, storageAccountName, accessKey string) error {

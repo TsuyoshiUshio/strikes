@@ -1,5 +1,7 @@
 package config
 
+const CONFIG_DIR = ".strikes"
+
 type Config struct {
 	SubscriptionID string
 	TenantID       string
@@ -7,8 +9,12 @@ type Config struct {
 	ClientSecret   string
 }
 
+const CONFIG_FILE_NAME = "config"
+
 type PowerPlantConfig struct {
-	ResourceGroup                  string
-	StorageAccountName             string
-	StorageAccountConnectionString string
+	ResourceGroup      string `json:"resourceGroup"`
+	StorageAccountName string `json:"storageAccountName"`
+	StorageAccountKey  string `json:"storageAccountKey"`
 }
+
+const POWER_PLANT_CONFIG_FILE_NAME = "powerplant"

@@ -1,13 +1,16 @@
 package command
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/user"
 	"path/filepath"
 
 	"github.com/Azure/go-autorest/autorest"
+	"github.com/TsuyoshiUshio/strikes/config"
 	"github.com/TsuyoshiUshio/strikes/helpers"
 	"github.com/TsuyoshiUshio/strikes/services/resources"
 	"github.com/TsuyoshiUshio/strikes/services/storage"
@@ -73,7 +76,7 @@ func getConfigDir() (string, error) {
 		log.Fatal(err)
 		return "", err
 	}
-	return filepath.Join(usr.HomeDir, ".strikes"), nil
+	return filepath.Join(usr.HomeDir, config.CONFIG_DIR), nil
 }
 
 func getConfigFilePath() (string, error) {
@@ -81,7 +84,15 @@ func getConfigFilePath() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(configDir, "config"), nil
+	return filepath.Join(configDir, config.CONFIG_FILE_NAME), nil
+}
+
+func getPowerPlantConfigFilePath() (string, error) {
+	configDir, err := getConfigDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(configDir, config.POWER_PLANT_CONFIG_FILE_NAME), nil
 }
 
 func getAuthorizer() (autorest.Authorizer, error) {
@@ -104,11 +115,11 @@ func createDefaultResourceGroup(location string) (string, error) {
 	}
 	defaultResourceGroup := resources.DEFAULT_RESOURCE_GROUP_NAME + "-" + location
 	fmt.Printf("Creating ResourceGroup %s...\n", defaultResourceGroup)
-	err = resources.CreateDefaultResourceGroup(authorizer, location)
+	resourceGroup, err := resources.CreateDefaultResourceGroup(authorizer, location)
 	if err != nil {
 		return "", err
 	}
-	return defaultResourceGroup, err
+	return resourceGroup, err
 }
 
 // CreateStorageAccountIfNotExists(authorizer autorest.Authorizer, name string, resourceGroup string,location string)
@@ -130,6 +141,25 @@ func createDefaultStorageAccountWithTable(resourceGroup string, location string,
 	}
 	accountKey := *(*accountKeys)[0].Value
 	fmt.Printf("AccountKey: %s\n", accountKey)
+
+	// Write Config File
+	powerPlantConfig := &config.PowerPlantConfig{
+		ResourceGroup:      resourceGroup,
+		StorageAccountName: storageAccountName,
+		StorageAccountKey:  accountKey,
+	}
+
+	powerPlantConfigBody, _ := json.Marshal(powerPlantConfig)
+	powerPlantConfigFilePath, err := getPowerPlantConfigFilePath()
+	if err != nil {
+		return err
+	}
+	err = ioutil.WriteFile(powerPlantConfigFilePath, powerPlantConfigBody, 0644)
+	if err != nil {
+		fmt.Printf("Can not write file: %s \n", powerPlantConfigFilePath)
+		return err
+	}
+
 	// Create Table Storage
 	err = storage.CreateTableIfNotExists(storage.DEFAULT_STORAGE_TABLE_NAME, storageAccountName, accountKey)
 	if err != nil {
