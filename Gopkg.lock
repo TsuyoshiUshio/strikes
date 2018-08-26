@@ -9,8 +9,8 @@
     "storage",
     "version"
   ]
-  revision = "4e8cbbfb1aeab140cd0fa97fd16b64ee18c3ca6a"
-  version = "v19.1.0"
+  revision = "4650843026a7fdec254a8d9cf893693a254edd0b"
+  version = "v16.2.1"
 
 [[projects]]
   name = "github.com/Azure/go-autorest"
@@ -86,6 +86,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5823559f08158490dad52c73d07df4fdab25e52c178fe0646df1141f83d89996"
+  inputs-digest = "0ff77928d092ec33df50f55dd540fe01d6de0427bf2ad3348544a04302df374d"
   solver-name = "gps-cdcl"
   solver-version = 1
