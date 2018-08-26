@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/TsuyoshiUshio/strikes/command"
 	"github.com/urfave/cli"
 )
 
@@ -18,12 +19,7 @@ func main() {
 			Name:    "init",
 			Aliases: []string{"i"},
 			Usage:   "Initialize strikes. Initialize your Power Plant.",
-			Action: func(c *cli.Context) error {
-				fmt.Println("Creating ...")
-				time.Sleep(2000 * time.Millisecond)
-				fmt.Println("Power Plant is succesfully installed.")
-				return nil
-			},
+			Action:  command.Initialize,
 		},
 		{
 			Name:    "install",

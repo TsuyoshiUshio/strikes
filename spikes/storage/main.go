@@ -115,6 +115,7 @@ func execBasicTableOperation(tableName, storageAccountName, accessKey string) {
 	// Currently, I try to create and it fails if it already has an Table Storage.
 	tableService := client.GetTableService()
 	table := tableService.GetTableReference(tableName)
+
 	err = table.Create(30, storage.EmptyPayload, nil)
 	if err != nil {
 		log.Fatal("%s: %v", "Table Creating error", err)
