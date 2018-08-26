@@ -3,6 +3,7 @@ package command
 import (
 	"fmt"
 	"log"
+	"os"
 	"os/user"
 	"path/filepath"
 
@@ -21,6 +22,14 @@ func Initialize(c *cli.Context) error {
 	fmt.Printf("create %s if not exists.\n", configDir)
 	err = helpers.CreateDirIfNotExist(configDir)
 	// Move config file to ~/.strikes/config
+	configFilePath := filepath.Join(configDir, "config")
+	err = os.Rename(".config", configFilePath)
+	if err != nil {
+		fmt.Printf("%s file not found.\n", configFilePath)
+		fmt.Println("Get ServicePrincipal to execute this command: az ad sp create-for-rbac -n \"Strikes\" --sdk-auth > .config")
+		fmt.Println("Then execute strikes init again.")
+		return nil
+	}
 	// Create a configuration file
 	// Create a ResourceGroup is not exists
 	// Default ResourceGroupName: strikes-storage-japaneast
