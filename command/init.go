@@ -16,6 +16,7 @@ func Initialize(c *cli.Context) error {
 	// Check if there is .strikes on your home directory
 	fmt.Println("Initializing Strikes...")
 	// Create .strikes and copy .config file to the directory.
+	location := c.String("l")
 
 	err := createConfigFileAndDirectory()
 	if err != nil {
@@ -23,7 +24,7 @@ func Initialize(c *cli.Context) error {
 	}
 
 	// Create a ResourceGroup is not exists
-	err = createDefaultResourceGroup()
+	err = createDefaultResourceGroup(location)
 	if err != nil {
 		return err
 	}
@@ -78,7 +79,7 @@ func getConfigFilePath() (string, error) {
 	return filepath.Join(configDir, "config"), nil
 }
 
-func createDefaultResourceGroup() error {
+func createDefaultResourceGroup(location string) error {
 	configFilePath, err := getConfigFilePath()
 	if err != nil {
 		return err
@@ -88,8 +89,8 @@ func createDefaultResourceGroup() error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Creating ResourceGroup %s...\n", resources.DEFAULT_RESOURCE_GROUP_NAME+"-japaneast")
-	err = resources.CreateDefaultResourceGroup(authorizer, "japaneast")
+	fmt.Printf("Creating ResourceGroup %s...\n", resources.DEFAULT_RESOURCE_GROUP_NAME+"-"+location)
+	err = resources.CreateDefaultResourceGroup(authorizer, location)
 	if err != nil {
 		return err
 	}

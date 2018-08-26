@@ -20,6 +20,13 @@ func main() {
 			Aliases: []string{"i"},
 			Usage:   "Initialize strikes. Initialize your Power Plant.",
 			Action:  command.Initialize,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "location, l",
+					Value: "japaneast",
+					Usage: "Specify location for the Strikes Resources",
+				},
+			},
 		},
 		{
 			Name:    "install",
