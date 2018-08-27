@@ -18,7 +18,9 @@ func NewStorageAccountClient(authorizer *autorest.Authorizer) (*StorageAccountCl
 	storageAccountClient := storageAccount.NewAccountsClient((*authInfo)["subscriptionId"])
 	storageAccountClient.Authorizer = *authorizer
 	return &StorageAccountClient{
-		Client: &storageAccountClient,
+		Client:            &storageAccountClient,
+		AutoRestClient:    &(storageAccountClient.Client),
+		WaitForCompletion: &waitForCompletionImpl{},
 	}, nil
 }
 

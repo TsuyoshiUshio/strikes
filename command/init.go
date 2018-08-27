@@ -74,14 +74,16 @@ func createDefaultResourceGroup(location string) (string, error) {
 	}
 	defaultResourceGroup := resources.DEFAULT_RESOURCE_GROUP_NAME + "-" + location
 	fmt.Printf("Creating ResourceGroup %s...\n", defaultResourceGroup)
-	resourceGroup, err := resources.CreateDefaultResourceGroup(authorizer, location)
+	client, err := resources.NewResrouceGroupClient(authorizer)
+	if err != nil {
+		return "", err
+	}
+	resourceGroup, err := client.CreateDefaultResourceGroup(location)
 	if err != nil {
 		return "", err
 	}
 	return resourceGroup, err
 }
-
-// CreateStorageAccountIfNotExists(authorizer autorest.Authorizer, name string, resourceGroup string,location string)
 
 func createDefaultStorageAccountWithTable(resourceGroup string, location string, force bool) error {
 	// Read powerplant configration file, check if there is existing storage account.
