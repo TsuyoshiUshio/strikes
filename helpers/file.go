@@ -11,3 +11,8 @@ func CreateDirIfNotExist(dir string) error {
 	}
 	return nil
 }
+
+func Exists(name string) bool {
+	_, err := os.Stat(name)
+	return !os.IsNotExist(err)
+}

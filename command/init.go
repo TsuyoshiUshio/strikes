@@ -35,7 +35,8 @@ func Initialize(c *cli.Context) error {
 	}
 	// Create a Storage Account if not exists
 	// Default Storage AccountName: sastorikes{random English or Numeric}
-	err = createDefaultStorageAccountWithTable(resourceGroup, location, false)
+	force := c.Bool("f")
+	err = createDefaultStorageAccountWithTable(resourceGroup, location, force)
 	if err != nil {
 		return err
 	}
@@ -95,6 +96,21 @@ func getPowerPlantConfigFilePath() (string, error) {
 	return filepath.Join(configDir, config.POWER_PLANT_CONFIG_FILE_NAME), nil
 }
 
+func getPowerPlantConfig() (*config.PowerPlantConfig, error) {
+	filePath, err := getPowerPlantConfigFilePath()
+	if err != nil {
+		return nil, err
+	}
+	content, err := ioutil.ReadFile(filePath)
+	var config config.PowerPlantConfig
+	err = json.Unmarshal(content, &config)
+	if err != nil {
+		log.Fatalf("Cannot unmarshal the config file %s \n", filePath)
+		return nil, err
+	}
+	return &config, nil
+}
+
 func getAuthorizer() (autorest.Authorizer, error) {
 	configFilePath, err := getConfigFilePath()
 	if err != nil {
@@ -126,16 +142,44 @@ func createDefaultResourceGroup(location string) (string, error) {
 
 func createDefaultStorageAccountWithTable(resourceGroup string, location string, force bool) error {
 	// Read powerplant configration file, check if there is existing storage account.
-
-	// Create Storage Account
-	storageAccountName := storage.DEFAULT_STORAGE_ACCOUNT_NAME + helpers.RandomStrings(8)
-	// Store the powerplant configuration file
+	powerPlantConfigFilePath, err := getPowerPlantConfigFilePath()
+	if err != nil {
+		return err
+	}
 
 	authorizer, err := getAuthorizer()
 	if err != nil {
 		return err
 	}
-	accountKeys, err := storage.CreateStorageAccountIfNotExists(authorizer, storageAccountName, resourceGroup, location)
+	storageAccountClient, err := storage.NewStorageAccountClient(&authorizer)
+	if err != nil {
+		return err
+	}
+
+	if helpers.Exists(powerPlantConfigFilePath) {
+		if force {
+			// Read config file
+			config, err := getPowerPlantConfig()
+			if err != nil {
+				return err
+			}
+			// Remove Storage Account
+			storageAccountClient.DeleteIfExists(config.StorageAccountName, config.ResourceGroup)
+			// Remove the config file
+			fmt.Printf("Current PowerPlant configration and storage account: %s (ResourceGroup %s) has been removed\n", config.StorageAccountName, config.ResourceGroup)
+			err = os.Remove(powerPlantConfigFilePath)
+		} else {
+			// Do nothing
+			fmt.Printf("PowerPlant strage account is already exists. For more details, see {Home}/.strikes/powerplant.\n")
+			return nil
+		}
+	}
+
+	// Create Storage Account
+	storageAccountName := storage.DEFAULT_STORAGE_ACCOUNT_NAME + helpers.RandomStrings(8)
+	// Store the powerplant configuration file
+
+	accountKeys, err := storageAccountClient.CreateStorageAccountIfNotExists(storageAccountName, resourceGroup, location)
 	if err != nil {
 		return err
 	}
@@ -150,10 +194,7 @@ func createDefaultStorageAccountWithTable(resourceGroup string, location string,
 	}
 
 	powerPlantConfigBody, _ := json.Marshal(powerPlantConfig)
-	powerPlantConfigFilePath, err := getPowerPlantConfigFilePath()
-	if err != nil {
-		return err
-	}
+
 	err = ioutil.WriteFile(powerPlantConfigFilePath, powerPlantConfigBody, 0644)
 	if err != nil {
 		fmt.Printf("Can not write file: %s \n", powerPlantConfigFilePath)

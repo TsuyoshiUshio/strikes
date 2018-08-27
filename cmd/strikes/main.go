@@ -26,6 +26,10 @@ func main() {
 					Value: "japaneast",
 					Usage: "Specify location for the Strikes Resources",
 				},
+				cli.BoolFlag{
+					Name:  "force, f",
+					Usage: "Force remove current config and PowerPlant strage account if it is specified.",
+				},
 			},
 		},
 		{
