@@ -10,6 +10,10 @@ import (
 
 const DEFAULT_RESOURCE_GROUP_NAME = "strikes-storage"
 
+type IGroupsClient interface {
+	CreateOrUpdate(ctx context.Context, resourceGroupName string, parameters resourceGroup.Group) (resourceGroup.Group, error)
+}
+
 type ResourceGroupClient struct {
 	Client *resourceGroup.GroupsClient
 }

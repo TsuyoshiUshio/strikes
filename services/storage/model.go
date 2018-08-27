@@ -78,12 +78,6 @@ func (c *StorageAccountClient) CreateStorageAccountIfNotExists(name string, reso
 		return nil, err
 	}
 
-	// err = account.WaitForCompletion(ctx, *c.AutoRestClient)
-	// if err != nil {
-	// 	log.Fatal("Can not get the storage account response")
-	// 	return nil, err
-	// }
-
 	keysResult, err := c.Client.ListKeys(ctx, resourceGroup, name)
 	if err != nil {
 		log.Fatal("Can not fetch list keys: resourceGroup: %s StorageAccount: %s \n", resourceGroup, name)
