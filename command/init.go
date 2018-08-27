@@ -4,12 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
-	"os/user"
-	"path/filepath"
 
-	"github.com/Azure/go-autorest/autorest"
 	"github.com/TsuyoshiUshio/strikes/config"
 	"github.com/TsuyoshiUshio/strikes/helpers"
 	"github.com/TsuyoshiUshio/strikes/services/resources"
@@ -45,7 +41,7 @@ func Initialize(c *cli.Context) error {
 
 func createConfigFileAndDirectory() error {
 
-	configDir, err := getConfigDir()
+	configDir, err := config.GetConfigDir()
 	if err != nil {
 		return err
 	}
@@ -57,7 +53,7 @@ func createConfigFileAndDirectory() error {
 		return err
 	}
 	// Move config file to ~/.strikes/config
-	configFilePath, err := getConfigFilePath()
+	configFilePath, err := config.GetConfigFilePath()
 	if err != nil {
 		return err
 	}
@@ -71,61 +67,8 @@ func createConfigFileAndDirectory() error {
 	return nil
 }
 
-func getConfigDir() (string, error) {
-	usr, err := user.Current()
-	if err != nil {
-		log.Fatal(err)
-		return "", err
-	}
-	return filepath.Join(usr.HomeDir, config.CONFIG_DIR), nil
-}
-
-func getConfigFilePath() (string, error) {
-	configDir, err := getConfigDir()
-	if err != nil {
-		return "", err
-	}
-	return filepath.Join(configDir, config.CONFIG_FILE_NAME), nil
-}
-
-func getPowerPlantConfigFilePath() (string, error) {
-	configDir, err := getConfigDir()
-	if err != nil {
-		return "", err
-	}
-	return filepath.Join(configDir, config.POWER_PLANT_CONFIG_FILE_NAME), nil
-}
-
-func getPowerPlantConfig() (*config.PowerPlantConfig, error) {
-	filePath, err := getPowerPlantConfigFilePath()
-	if err != nil {
-		return nil, err
-	}
-	content, err := ioutil.ReadFile(filePath)
-	var config config.PowerPlantConfig
-	err = json.Unmarshal(content, &config)
-	if err != nil {
-		log.Fatalf("Cannot unmarshal the config file %s \n", filePath)
-		return nil, err
-	}
-	return &config, nil
-}
-
-func getAuthorizer() (autorest.Authorizer, error) {
-	configFilePath, err := getConfigFilePath()
-	if err != nil {
-		return nil, err
-	}
-
-	authorizer, err := helpers.NewAuthorizer(configFilePath)
-	if err != nil {
-		return nil, err
-	}
-	return authorizer, nil
-}
-
 func createDefaultResourceGroup(location string) (string, error) {
-	authorizer, err := getAuthorizer()
+	authorizer, err := config.GetAuthorizer()
 	if err != nil {
 		return "", err
 	}
@@ -142,12 +85,12 @@ func createDefaultResourceGroup(location string) (string, error) {
 
 func createDefaultStorageAccountWithTable(resourceGroup string, location string, force bool) error {
 	// Read powerplant configration file, check if there is existing storage account.
-	powerPlantConfigFilePath, err := getPowerPlantConfigFilePath()
+	powerPlantConfigFilePath, err := config.GetPowerPlantConfigFilePath()
 	if err != nil {
 		return err
 	}
 
-	authorizer, err := getAuthorizer()
+	authorizer, err := config.GetAuthorizer()
 	if err != nil {
 		return err
 	}
@@ -159,7 +102,7 @@ func createDefaultStorageAccountWithTable(resourceGroup string, location string,
 	if helpers.Exists(powerPlantConfigFilePath) {
 		if force {
 			// Read config file
-			config, err := getPowerPlantConfig()
+			config, err := config.GetPowerPlantConfig()
 			if err != nil {
 				return err
 			}
