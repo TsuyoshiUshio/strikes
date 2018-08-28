@@ -30,67 +30,79 @@ type PowerPlantConfig struct {
 
 const POWER_PLANT_CONFIG_FILE_NAME = "powerplant"
 
-type ICOnfigHelper interface {
+type IConfigContext interface {
 	GetConfigDir() (string, error)
-	GetConfigFilePath() (string, error)
-	GetPowerPlantConfigFilePath() (string, error)
+	GetConfigFilePath() string
+	GetPowerPlantConfigFilePath() string
 	GetPowerPlantConfig() (*PowerPlantConfig, error)
 	GetAuthorizer() (autorest.Authorizer, error)
 }
-type ConfigHelper struct {
+
+type IGetHomeDir func() (string, error)
+
+type ConfigContext struct {
+	ConfigDir                string
+	PowerPlantConfigFilePath string
+	GetHomeDir               IGetHomeDir
 }
 
-func NewConfigHelper() *ConfigHelper {
-	return &ConfigHelper{}
-}
-
-func (h *ConfigHelper) GetConfigDir() (string, error) {
+func getHomeDir() (string, error) {
 	usr, err := user.Current()
 	if err != nil {
 		log.Fatal(err)
 		return "", err
 	}
-	return filepath.Join(usr.HomeDir, CONFIG_DIR), nil
+	return usr.HomeDir, nil
 }
 
-func (h *ConfigHelper) GetConfigFilePath() (string, error) {
-	configDir, err := h.GetConfigDir()
-	if err != nil {
-		return "", err
-	}
-	return filepath.Join(configDir, CONFIG_FILE_NAME), nil
+func NewConfigContext() (*ConfigContext, error) {
+	return NewConfigContextWithGetHomeDir(getHomeDir)
 }
 
-func (h *ConfigHelper) GetPowerPlantConfigFilePath() (string, error) {
-	configDir, err := h.GetConfigDir()
-	if err != nil {
-		return "", err
-	}
-	return filepath.Join(configDir, POWER_PLANT_CONFIG_FILE_NAME), nil
-}
+func NewConfigContextWithGetHomeDir(getHomeDirFunc IGetHomeDir) (*ConfigContext, error) {
+	context := ConfigContext{}
+	context.GetHomeDir = getHomeDirFunc
 
-func (h *ConfigHelper) GetPowerPlantConfig() (*PowerPlantConfig, error) {
-	filePath, err := h.GetPowerPlantConfigFilePath()
+	configDir, err := context.GetConfigDir()
 	if err != nil {
 		return nil, err
 	}
-	content, err := ioutil.ReadFile(filePath)
+
+	context.ConfigDir = configDir
+	context.PowerPlantConfigFilePath = context.GetPowerPlantConfigFilePath()
+	return &context, nil
+}
+
+func (c *ConfigContext) GetConfigDir() (string, error) {
+	homeDir, err := c.GetHomeDir()
+	if err != nil {
+		log.Fatal(err)
+		return "", err
+	}
+	return filepath.Join(homeDir, CONFIG_DIR), nil
+}
+
+func (c *ConfigContext) GetConfigFilePath() string {
+	return filepath.Join(c.ConfigDir, CONFIG_FILE_NAME)
+}
+
+func (c *ConfigContext) GetPowerPlantConfigFilePath() string {
+	return filepath.Join(c.ConfigDir, POWER_PLANT_CONFIG_FILE_NAME)
+}
+
+func (c *ConfigContext) GetPowerPlantConfig() (*PowerPlantConfig, error) {
+	content, err := ioutil.ReadFile(c.PowerPlantConfigFilePath)
 	var config PowerPlantConfig
 	err = json.Unmarshal(content, &config)
 	if err != nil {
-		log.Fatalf("Cannot unmarshal the config file %s \n", filePath)
+		log.Fatalf("Cannot unmarshal the config file %s \n", c.PowerPlantConfigFilePath)
 		return nil, err
 	}
 	return &config, nil
 }
 
-func (h *ConfigHelper) GetAuthorizer() (autorest.Authorizer, error) {
-	configFilePath, err := h.GetConfigFilePath()
-	if err != nil {
-		return nil, err
-	}
-
-	authorizer, err := helpers.NewAuthorizer(configFilePath)
+func (c *ConfigContext) GetAuthorizer() (autorest.Authorizer, error) {
+	authorizer, err := helpers.NewAuthorizer(c.GetConfigFilePath())
 	if err != nil {
 		return nil, err
 	}

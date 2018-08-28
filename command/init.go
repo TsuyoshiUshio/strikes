@@ -40,24 +40,19 @@ func Initialize(c *cli.Context) error {
 }
 
 func createConfigFileAndDirectory() error {
-	configHelper := config.NewConfigHelper()
-
-	configDir, err := configHelper.GetConfigDir()
+	configContext, err := config.NewConfigContext()
 	if err != nil {
 		return err
 	}
 
 	// create config dir
-	fmt.Printf("create %s if not exists.\n", configDir)
-	err = helpers.CreateDirIfNotExist(configDir)
+	fmt.Printf("create %s if not exists.\n", configContext.ConfigDir)
+	err = helpers.CreateDirIfNotExist(configContext.ConfigDir)
 	if err != nil {
 		return err
 	}
 	// Move config file to ~/.strikes/config
-	configFilePath, err := configHelper.GetConfigFilePath()
-	if err != nil {
-		return err
-	}
+	configFilePath := configContext.GetConfigFilePath()
 	err = os.Rename(".config", configFilePath)
 	if err != nil {
 		fmt.Printf("%s file not found.\n", configFilePath)
@@ -69,8 +64,11 @@ func createConfigFileAndDirectory() error {
 }
 
 func createDefaultResourceGroup(location string) (string, error) {
-	configHelper := config.NewConfigHelper()
-	authorizer, err := configHelper.GetAuthorizer()
+	configContext, err := config.NewConfigContext()
+	if err != nil {
+		return "", err
+	}
+	authorizer, err := configContext.GetAuthorizer()
 	if err != nil {
 		return "", err
 	}
@@ -89,13 +87,12 @@ func createDefaultResourceGroup(location string) (string, error) {
 
 func createDefaultStorageAccountWithTable(resourceGroup string, location string, force bool) error {
 	// Read powerplant configration file, check if there is existing storage account.
-	configHelper := config.NewConfigHelper()
-	powerPlantConfigFilePath, err := configHelper.GetPowerPlantConfigFilePath()
+	configContext, err := config.NewConfigContext()
 	if err != nil {
 		return err
 	}
 
-	authorizer, err := configHelper.GetAuthorizer()
+	authorizer, err := configContext.GetAuthorizer()
 	if err != nil {
 		return err
 	}
@@ -104,10 +101,10 @@ func createDefaultStorageAccountWithTable(resourceGroup string, location string,
 		return err
 	}
 
-	if helpers.Exists(powerPlantConfigFilePath) {
+	if helpers.Exists(configContext.PowerPlantConfigFilePath) {
 		if force {
 			// Read config file
-			config, err := configHelper.GetPowerPlantConfig()
+			config, err := configContext.GetPowerPlantConfig()
 			if err != nil {
 				return err
 			}
@@ -115,7 +112,7 @@ func createDefaultStorageAccountWithTable(resourceGroup string, location string,
 			storageAccountClient.DeleteIfExists(config.StorageAccountName, config.ResourceGroup)
 			// Remove the config file
 			fmt.Printf("Current PowerPlant configration and storage account: %s (ResourceGroup %s) has been removed\n", config.StorageAccountName, config.ResourceGroup)
-			err = os.Remove(powerPlantConfigFilePath)
+			err = os.Remove(configContext.PowerPlantConfigFilePath)
 		} else {
 			// Do nothing
 			fmt.Printf("PowerPlant strage account is already exists. For more details, see {Home}/.strikes/powerplant.\n")
@@ -143,9 +140,9 @@ func createDefaultStorageAccountWithTable(resourceGroup string, location string,
 
 	powerPlantConfigBody, _ := json.Marshal(powerPlantConfig)
 
-	err = ioutil.WriteFile(powerPlantConfigFilePath, powerPlantConfigBody, 0644)
+	err = ioutil.WriteFile(configContext.PowerPlantConfigFilePath, powerPlantConfigBody, 0644)
 	if err != nil {
-		fmt.Printf("Can not write file: %s \n", powerPlantConfigFilePath)
+		fmt.Printf("Can not write file: %s \n", configContext.PowerPlantConfigFilePath)
 		return err
 	}
 
