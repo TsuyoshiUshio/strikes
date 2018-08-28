@@ -68,7 +68,7 @@ func (c *StorageAccountClient) CreateStorageAccountIfNotExists(name string, reso
 	)
 
 	if err != nil {
-		log.Fatal("Storage Creation fail: %s\n", name)
+		log.Fatalf("Storage Creation fail: %s\n", name)
 		return nil, err
 	}
 
@@ -80,7 +80,7 @@ func (c *StorageAccountClient) CreateStorageAccountIfNotExists(name string, reso
 
 	keysResult, err := c.Client.ListKeys(ctx, resourceGroup, name)
 	if err != nil {
-		log.Fatal("Can not fetch list keys: resourceGroup: %s StorageAccount: %s \n", resourceGroup, name)
+		log.Fatalf("Can not fetch list keys: resourceGroup: %s StorageAccount: %s \n", resourceGroup, name)
 		return nil, err
 	}
 

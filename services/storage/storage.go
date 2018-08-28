@@ -27,7 +27,7 @@ func NewStorageAccountClient(authorizer *autorest.Authorizer) (*StorageAccountCl
 func CreateTableIfNotExists(tableName, storageAccountName, accessKey string) error {
 	client, err := newStorageTableClient(storageAccountName, accessKey)
 	if err != nil {
-		log.Fatal("Storage Table Client %s can not create: %v\n", storageAccountName, err)
+		log.Fatalf("Storage Table Client %s can not create: %v\n", storageAccountName, err)
 		return err
 	}
 
@@ -36,7 +36,7 @@ func CreateTableIfNotExists(tableName, storageAccountName, accessKey string) err
 
 	err = table.Create(30, storage.EmptyPayload, nil)
 	if err != nil {
-		log.Fatal("%s: %v", "Table Creating error", err)
+		log.Fatalf("%s: %v", "Table Creating error", err)
 		return err
 	}
 	return nil

@@ -29,6 +29,12 @@
   version = "v10.15.2"
 
 [[projects]]
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+  version = "v1.1.1"
+
+[[projects]]
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
   revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
@@ -39,6 +45,12 @@
   packages = ["."]
   revision = "5448fe645cb1964ba70ac8f9f2ffe975e61a536c"
   version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/golang/mock"
+  packages = ["gomock"]
+  revision = "c34cdb4725f4c3844d095133c6e40e448b86589b"
+  version = "v1.1.1"
 
 [[projects]]
   branch = "master"
@@ -63,10 +75,33 @@
   version = "v1.1.0"
 
 [[projects]]
+  name = "github.com/pmezard/go-difflib"
+  packages = ["difflib"]
+  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/satori/go.uuid"
   packages = ["."]
   revision = "f58768cc1a7a7e77a3bd49e98cdd21419399b6a3"
   version = "v1.2.0"
+
+[[projects]]
+  name = "github.com/stretchr/objx"
+  packages = ["."]
+  revision = "477a77ecc69700c7cdeb1fa9e129548e1c1c393c"
+  version = "v0.1.1"
+
+[[projects]]
+  name = "github.com/stretchr/testify"
+  packages = [
+    ".",
+    "assert",
+    "http",
+    "mock"
+  ]
+  revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
+  version = "v1.2.2"
 
 [[projects]]
   name = "github.com/urfave/cli"
@@ -83,9 +118,15 @@
   ]
   revision = "614d502a4dac94afa3a6ce146bd1736da82514c6"
 
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["context"]
+  revision = "8a410e7b638dca158bf9e766925842f6651ff828"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0ff77928d092ec33df50f55dd540fe01d6de0427bf2ad3348544a04302df374d"
+  inputs-digest = "63e9723002417b3b0b5eefec33ee5fcfd56891d86a5bfcb63a6a2853803f1bef"
   solver-name = "gps-cdcl"
   solver-version = 1
