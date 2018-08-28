@@ -30,7 +30,21 @@ type PowerPlantConfig struct {
 
 const POWER_PLANT_CONFIG_FILE_NAME = "powerplant"
 
-func GetConfigDir() (string, error) {
+type ICOnfigHelper interface {
+	GetConfigDir() (string, error)
+	GetConfigFilePath() (string, error)
+	GetPowerPlantConfigFilePath() (string, error)
+	GetPowerPlantConfig() (*PowerPlantConfig, error)
+	GetAuthorizer() (autorest.Authorizer, error)
+}
+type ConfigHelper struct {
+}
+
+func NewConfigHelper() *ConfigHelper {
+	return &ConfigHelper{}
+}
+
+func (h *ConfigHelper) GetConfigDir() (string, error) {
 	usr, err := user.Current()
 	if err != nil {
 		log.Fatal(err)
@@ -39,24 +53,24 @@ func GetConfigDir() (string, error) {
 	return filepath.Join(usr.HomeDir, CONFIG_DIR), nil
 }
 
-func GetConfigFilePath() (string, error) {
-	configDir, err := GetConfigDir()
+func (h *ConfigHelper) GetConfigFilePath() (string, error) {
+	configDir, err := h.GetConfigDir()
 	if err != nil {
 		return "", err
 	}
 	return filepath.Join(configDir, CONFIG_FILE_NAME), nil
 }
 
-func GetPowerPlantConfigFilePath() (string, error) {
-	configDir, err := GetConfigDir()
+func (h *ConfigHelper) GetPowerPlantConfigFilePath() (string, error) {
+	configDir, err := h.GetConfigDir()
 	if err != nil {
 		return "", err
 	}
 	return filepath.Join(configDir, POWER_PLANT_CONFIG_FILE_NAME), nil
 }
 
-func GetPowerPlantConfig() (*PowerPlantConfig, error) {
-	filePath, err := GetPowerPlantConfigFilePath()
+func (h *ConfigHelper) GetPowerPlantConfig() (*PowerPlantConfig, error) {
+	filePath, err := h.GetPowerPlantConfigFilePath()
 	if err != nil {
 		return nil, err
 	}
@@ -70,8 +84,8 @@ func GetPowerPlantConfig() (*PowerPlantConfig, error) {
 	return &config, nil
 }
 
-func GetAuthorizer() (autorest.Authorizer, error) {
-	configFilePath, err := GetConfigFilePath()
+func (h *ConfigHelper) GetAuthorizer() (autorest.Authorizer, error) {
+	configFilePath, err := h.GetConfigFilePath()
 	if err != nil {
 		return nil, err
 	}

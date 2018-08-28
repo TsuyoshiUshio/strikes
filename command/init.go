@@ -40,8 +40,9 @@ func Initialize(c *cli.Context) error {
 }
 
 func createConfigFileAndDirectory() error {
+	configHelper := config.NewConfigHelper()
 
-	configDir, err := config.GetConfigDir()
+	configDir, err := configHelper.GetConfigDir()
 	if err != nil {
 		return err
 	}
@@ -53,7 +54,7 @@ func createConfigFileAndDirectory() error {
 		return err
 	}
 	// Move config file to ~/.strikes/config
-	configFilePath, err := config.GetConfigFilePath()
+	configFilePath, err := configHelper.GetConfigFilePath()
 	if err != nil {
 		return err
 	}
@@ -68,7 +69,8 @@ func createConfigFileAndDirectory() error {
 }
 
 func createDefaultResourceGroup(location string) (string, error) {
-	authorizer, err := config.GetAuthorizer()
+	configHelper := config.NewConfigHelper()
+	authorizer, err := configHelper.GetAuthorizer()
 	if err != nil {
 		return "", err
 	}
@@ -87,12 +89,13 @@ func createDefaultResourceGroup(location string) (string, error) {
 
 func createDefaultStorageAccountWithTable(resourceGroup string, location string, force bool) error {
 	// Read powerplant configration file, check if there is existing storage account.
-	powerPlantConfigFilePath, err := config.GetPowerPlantConfigFilePath()
+	configHelper := config.NewConfigHelper()
+	powerPlantConfigFilePath, err := configHelper.GetPowerPlantConfigFilePath()
 	if err != nil {
 		return err
 	}
 
-	authorizer, err := config.GetAuthorizer()
+	authorizer, err := configHelper.GetAuthorizer()
 	if err != nil {
 		return err
 	}
@@ -104,7 +107,7 @@ func createDefaultStorageAccountWithTable(resourceGroup string, location string,
 	if helpers.Exists(powerPlantConfigFilePath) {
 		if force {
 			// Read config file
-			config, err := config.GetPowerPlantConfig()
+			config, err := configHelper.GetPowerPlantConfig()
 			if err != nil {
 				return err
 			}
