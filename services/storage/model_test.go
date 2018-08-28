@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"errors"
 	"testing"
 
 	storageAccount "github.com/Azure/azure-sdk-for-go/services/storage/mgmt/2017-06-01/storage"
@@ -83,4 +84,31 @@ func TestCreateStorageAccountIfNotExists(t *testing.T) {
 	accountKeys, err := storageAccountClient.CreateStorageAccountIfNotExists(storageAccountName, resourceGroup, location)
 	assert.Equal(t, accountKey, *(*accountKeys)[0].Value, "AccountKey should be equal")
 	assert.Nil(t, err)
+}
+
+func TestCreateStorageAccountDeleteIfExists(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	accountsClient := mock.NewMockIAccountsClient(ctrl)
+	storageAccountClient := &StorageAccountClient{
+		Client:            accountsClient,
+		AutoRestClient:    nil,
+		WaitForCompletion: nil,
+	}
+	resourceGroup := "someResource"
+	storageAccountNameExists := "someStorage01"
+	storageAccountNameNotExists := "someStorage02"
+	accountsClient.EXPECT().GetProperties(gomock.Any(), resourceGroup, storageAccountNameExists).Return(
+		storageAccount.Account{},
+		nil,
+	).Times(1)
+	accountsClient.EXPECT().GetProperties(gomock.Any(), resourceGroup, storageAccountNameNotExists).Return(
+		storageAccount.Account{},
+		errors.New("Storage Account can not find"),
+	).Times(1)
+	accountsClient.EXPECT().Delete(gomock.Any(), resourceGroup, storageAccountNameExists).Times(1)
+	storageAccountClient.DeleteIfExists(storageAccountNameExists, resourceGroup)
+	storageAccountClient.DeleteIfExists(storageAccountNameNotExists, resourceGroup)
+
 }
