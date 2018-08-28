@@ -13,41 +13,47 @@ import (
 	"github.com/urfave/cli"
 )
 
+// 	defaultResourceGroup := resources.DEFAULT_RESOURCE_GROUP_NAME + "-" + location
+
 func Initialize(c *cli.Context) error {
+	location := c.String("l")
+	defaultResourceGroup := resources.DEFAULT_RESOURCE_GROUP_NAME + "-" + location
+	configContext, err := config.NewConfigContext()
+	if err != nil {
+		return err
+	}
+	return InitializeWithConfigContextAndResrouceGroup(c, configContext, defaultResourceGroup)
+}
+func InitializeWithConfigContextAndResrouceGroup(c *cli.Context, configContext *config.ConfigContext, resourceGroupName string) error {
 	// Check if there is .strikes on your home directory
 	fmt.Println("Initializing Strikes...")
 	// Create .strikes and copy .config file to the directory.
 	location := c.String("l")
 
-	err := createConfigFileAndDirectory()
+	err := createConfigFileAndDirectory(configContext)
 	if err != nil {
 		return err
 	}
 
 	// Create a ResourceGroup is not exists
-	resourceGroup, err := createDefaultResourceGroup(location)
+	resourceGroup, err := createResourceGroup(configContext, resourceGroupName, location)
 	if err != nil {
 		return err
 	}
 	// Create a Storage Account if not exists
 	// Default Storage AccountName: sastorikes{random English or Numeric}
 	force := c.Bool("f")
-	err = createDefaultStorageAccountWithTable(resourceGroup, location, force)
+	err = createDefaultStorageAccountWithTable(configContext, resourceGroup, location, force)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func createConfigFileAndDirectory() error {
-	configContext, err := config.NewConfigContext()
-	if err != nil {
-		return err
-	}
-
+func createConfigFileAndDirectory(configContext *config.ConfigContext) error {
 	// create config dir
 	fmt.Printf("create %s if not exists.\n", configContext.ConfigDir)
-	err = helpers.CreateDirIfNotExist(configContext.ConfigDir)
+	err := helpers.CreateDirIfNotExist(configContext.ConfigDir)
 	if err != nil {
 		return err
 	}
@@ -63,35 +69,26 @@ func createConfigFileAndDirectory() error {
 	return nil
 }
 
-func createDefaultResourceGroup(location string) (string, error) {
-	configContext, err := config.NewConfigContext()
-	if err != nil {
-		return "", err
-	}
+func createResourceGroup(configContext *config.ConfigContext, resourceGroupName string, location string) (string, error) {
 	authorizer, err := configContext.GetAuthorizer()
 	if err != nil {
 		return "", err
 	}
-	defaultResourceGroup := resources.DEFAULT_RESOURCE_GROUP_NAME + "-" + location
-	fmt.Printf("Creating ResourceGroup %s...\n", defaultResourceGroup)
+
+	fmt.Printf("Creating ResourceGroup %s...\n", resourceGroupName)
 	client, err := resources.NewResrouceGroupClient(authorizer)
 	if err != nil {
 		return "", err
 	}
-	resourceGroup, err := client.CreateDefaultResourceGroup(location)
+	resourceGroup, err := client.CreateResourceGroup(resourceGroupName, location)
 	if err != nil {
 		return "", err
 	}
 	return resourceGroup, err
 }
 
-func createDefaultStorageAccountWithTable(resourceGroup string, location string, force bool) error {
+func createDefaultStorageAccountWithTable(configContext *config.ConfigContext, resourceGroup string, location string, force bool) error {
 	// Read powerplant configration file, check if there is existing storage account.
-	configContext, err := config.NewConfigContext()
-	if err != nil {
-		return err
-	}
-
 	authorizer, err := configContext.GetAuthorizer()
 	if err != nil {
 		return err

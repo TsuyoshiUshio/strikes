@@ -18,11 +18,9 @@ type ResourceGroupClient struct {
 	Client *resourceGroup.GroupsClient
 }
 
-func (c *ResourceGroupClient) CreateDefaultResourceGroup(location string) (string, error) {
+func (c *ResourceGroupClient) CreateResourceGroup(resourceGroupName, location string) (string, error) {
 
 	ctx := context.Background()
-
-	resourceGroupName := DEFAULT_RESOURCE_GROUP_NAME + "-" + location
 	tags := make(map[string]*string)
 	tags["AppName"] = to.StringPtr("strikes")
 	parameters := resourceGroup.Group{
@@ -36,4 +34,9 @@ func (c *ResourceGroupClient) CreateDefaultResourceGroup(location string) (strin
 		return "", err
 	}
 	return resourceGroupName, nil
+}
+
+func (c *ResourceGroupClient) Delete(resourceGroup string) (resourceGroup.GroupsDeleteFuture, error) {
+	ctx := context.Background()
+	return c.Client.Delete(ctx, resourceGroup)
 }

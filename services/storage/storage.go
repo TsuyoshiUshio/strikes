@@ -25,14 +25,11 @@ func NewStorageAccountClient(authorizer *autorest.Authorizer) (*StorageAccountCl
 }
 
 func CreateTableIfNotExists(tableName, storageAccountName, accessKey string) error {
-	client, err := newStorageTableClient(storageAccountName, accessKey)
+	table, err := GetTable(tableName, storageAccountName, accessKey)
 	if err != nil {
-		log.Fatalf("Storage Table Client %s can not create: %v\n", storageAccountName, err)
+		log.Fatalf("Can not get table reference tableName: %s storageAccount: %s, %v", tableName, storageAccountName, err)
 		return err
 	}
-
-	tableService := client.GetTableService()
-	table := tableService.GetTableReference(tableName)
 
 	err = table.Create(30, storage.EmptyPayload, nil)
 	if err != nil {
@@ -40,6 +37,33 @@ func CreateTableIfNotExists(tableName, storageAccountName, accessKey string) err
 		return err
 	}
 	return nil
+}
+
+func GetTable(tableName, storageAccountName, accessKey string) (*storage.Table, error) {
+	client, err := newStorageTableClient(storageAccountName, accessKey)
+	if err != nil {
+		log.Fatalf("Storage Table Client %s can not create: %v\n", storageAccountName, err)
+		return nil, err
+	}
+
+	tableService := client.GetTableService()
+	return tableService.GetTableReference(tableName), nil
+}
+
+func CheckTableExists(tableName, storageAccountName, accessKey string) (bool, error) {
+	table, err := GetTable(tableName, storageAccountName, accessKey)
+	if err != nil {
+		return false, nil
+	}
+	err = table.Get(30, storage.FullMetadata)
+	if err != nil {
+		return false, err
+	}
+	if tableName == table.Name {
+		return true, nil
+	} else {
+		return false, nil
+	}
 }
 
 func newStorageTableClient(name, key string) (*storage.Client, error) {
