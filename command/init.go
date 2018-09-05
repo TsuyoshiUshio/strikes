@@ -15,7 +15,10 @@ import (
 
 // 	defaultResourceGroup := resources.DEFAULT_RESOURCE_GROUP_NAME + "-" + location
 
-func Initialize(c *cli.Context) error {
+type InitCommand struct {
+}
+
+func (s *InitCommand) Initialize(c *cli.Context) error {
 	location := c.String("l")
 	defaultResourceGroup := resources.DEFAULT_RESOURCE_GROUP_NAME + "-" + location
 	configContext, err := config.NewConfigContext()

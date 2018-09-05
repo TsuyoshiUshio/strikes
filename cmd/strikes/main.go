@@ -19,7 +19,7 @@ func main() {
 			Name:    "init",
 			Aliases: []string{"i"},
 			Usage:   "Initialize strikes. Initialize your Power Plant.",
-			Action:  command.Initialize,
+			Action:  (&command.InitCommand{}).Initialize,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "location, l",
