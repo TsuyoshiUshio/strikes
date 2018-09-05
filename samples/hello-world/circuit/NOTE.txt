@@ -1,0 +1,9 @@
+Hello World package successfully deployed!
+
+Please refer these resources: 
+
+Resource Group  : ...
+Azure Functions : ...
+
+Go to ....  You can see the all functions deployed. 
+
