@@ -27,11 +27,19 @@ variable "repository_base_uri" {
 
 # Pacakge settings
 
-variable "packages_sub_dir" {
-    #example
-    # default = "hello-world/1.0.0/package.zip"
+variable "package_name" {
+  # example
+  # default = "hello-world"
+}
 
+variable "package_version" {
+  # example
+  # default = 1.0.0
+}
 
+variable "package_zip_name" {
+    # example
+    # default = "hello.zip"
 }
 
 # Specify the language of the package
@@ -101,6 +109,6 @@ resource "azurerm_function_app" "test" {
     "FUNCTIONS_EXTENSION_VERSION" = "beta"
     "FUNCTIONS_WORKER_RUNTIME" = "${var.language}"
     # This going to change into WEBSITE_RUN_FROM_PACKAGE
-    "WEBSITE_RUN_FROM_ZIP" = "${var.repository_base_uri}${var.packages_sub_dir}"
+    "WEBSITE_RUN_FROM_ZIP" = "${var.repository_base_uri}${var.package_name}/${var.package_zip_name}/${var.package_zip_name}"
   }
 }

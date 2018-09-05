@@ -33,6 +33,19 @@ func main() {
 			},
 		},
 		{
+			Name:    "push",
+			Aliases: []string{"p"},
+			Usage:   "Push a package to repository server",
+			Action:  (&command.PushCommand{}).Push,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "package, p",
+					Value: ".",
+					Usage: "Specify directory of the Strikes Package",
+				},
+			},
+		},
+		{
 			Name:    "install",
 			Aliases: []string{"in"},
 			Usage:   "Install Lightning Strikes Package.",

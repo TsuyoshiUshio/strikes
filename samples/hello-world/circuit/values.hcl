@@ -16,3 +16,7 @@ variable "tag_name" {
 variable "language" {
     default = "dotnet"
 }
+
+variable "packages_sub_dir" {
+    default = "hello-world/1.0.0/hello.zip"
+}

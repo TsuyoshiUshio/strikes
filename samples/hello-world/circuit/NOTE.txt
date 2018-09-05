@@ -5,5 +5,5 @@ Please refer these resources:
 Resource Group  : ...
 Azure Functions : ...
 
-Go to ....  You can see the all functions deployed. 
+Go to https://{environment_base_name}app.azurewebsites.net/api/HellWorld  You can see the all functions deployed. 
 
