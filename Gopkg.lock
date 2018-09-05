@@ -29,6 +29,12 @@
   version = "v10.15.2"
 
 [[projects]]
+  name = "github.com/bouk/monkey"
+  packages = ["."]
+  revision = "5df1f207ff77e025801505ae4d903133a0b4353f"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
   revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
@@ -87,19 +93,8 @@
   version = "v1.2.0"
 
 [[projects]]
-  name = "github.com/stretchr/objx"
-  packages = ["."]
-  revision = "477a77ecc69700c7cdeb1fa9e129548e1c1c393c"
-  version = "v0.1.1"
-
-[[projects]]
   name = "github.com/stretchr/testify"
-  packages = [
-    ".",
-    "assert",
-    "http",
-    "mock"
-  ]
+  packages = ["assert"]
   revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
   version = "v1.2.2"
 
@@ -124,9 +119,15 @@
   packages = ["context"]
   revision = "8a410e7b638dca158bf9e766925842f6651ff828"
 
+[[projects]]
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
+  version = "v2.2.1"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "63e9723002417b3b0b5eefec33ee5fcfd56891d86a5bfcb63a6a2853803f1bef"
+  inputs-digest = "8f0cd4017c4a7fe5a44fb497e0ac484e860dcb3d714a0793f004eaf6eeb3cbde"
   solver-name = "gps-cdcl"
   solver-version = 1

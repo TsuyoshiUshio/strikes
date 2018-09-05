@@ -1,0 +1,15 @@
+# Strikes package manifest file
+
+name: bar
+description: Explanation of bar
+author: Foo Bar
+projectPage: https://github.com/foo/bar
+projectRepo: https://foo.bar.com
+
+# Release
+
+version: 1.0.0
+providerType: Terraform
+releaseNote: Explanation of this release
+visibility: public
+startScript: terraform.tf
