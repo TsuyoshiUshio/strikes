@@ -44,3 +44,17 @@ func TestReadManifestWithoutFile(t *testing.T) {
 	assert.Regexp(t, "Cannot read Manifest file: open ./test-fixture/manifest-basic/foo.yaml: no such file or directory", output)
 
 }
+
+func TestReadManifestWithMissingColumn(t *testing.T) {
+	fakeExit := func(int) {
+		// do nothing
+	}
+	patch := monkey.Patch(os.Exit, fakeExit)
+	defer patch.Unpatch()
+	//var err error.Error
+	output := captureOutput(func() {
+		_, _ = NewManifestFromFile("./test-fixture/manifest-wrong-yaml/manifest.yaml")
+	})
+	assert.Regexp(t, "Cannot unmarshall the Manifest file: yaml: mapping values are not allowed in this context\n", output)
+
+}
