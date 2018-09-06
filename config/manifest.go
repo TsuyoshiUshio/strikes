@@ -12,14 +12,14 @@ type Manifest struct {
 	Name        string `yaml:"name" validate:"required"`
 	Description string `yaml:"description"`
 	Author      string `yaml:"author"`
-	ProjectPage string `yaml:"projectPage"`
-	ProjectRepo string `yaml:"projectRepo"`
+	ProjectPage string `yaml:"projectPage" validate:"url"`
+	ProjectRepo string `yaml:"projectRepo" validate:"url"`
 
 	// Release
 	Version      string `yaml:"version"`
-	ProviderType string `yaml:"providerType"`
+	ProviderType string `yaml:"providerType" validate:"providerType"`
 	ReleaseNote  string `yaml:"releaseNote"`
-	Visibility   string `yaml:"visibility"`
+	Visibility   string `yaml:"visibility" validate:"visibility"`
 	StartScript  string `yaml:"startScript"`
 }
 
@@ -38,8 +38,20 @@ func NewManifestFromFile(path string) (*Manifest, error) {
 	return &manifest, nil
 }
 
+func validateVisibility(fl validator.FieldLevel) bool {
+	value := fl.Field().String()
+	return (value == "public" || value == "preview" || value == "private")
+}
+
+func validateProviderType(fl validator.FieldLevel) bool {
+	value := fl.Field().String()
+	return (value == "Terraform" || value == "ARM")
+}
+
 func (m *Manifest) Validate() error {
 	var validate *validator.Validate
 	validate = validator.New()
+	validate.RegisterValidation("providerType", validateProviderType)
+	validate.RegisterValidation("visibility", validateVisibility)
 	return validate.Struct(m)
 }

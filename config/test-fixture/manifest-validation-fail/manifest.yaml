@@ -3,8 +3,8 @@
 name: 
 description: Explanation of bar
 author: Foo Bar
-projectPage: https://github.com/foo/bar
-projectRepo: https://foo.bar.com
+projectPage: https@//github.com/foo/bar
+projectRepo: https@//foo.bar.com
 
 # Release
 
