@@ -4,11 +4,12 @@ import (
 	"io/ioutil"
 	"log"
 
+	validator "gopkg.in/go-playground/validator.v9"
 	"gopkg.in/yaml.v2"
 )
 
 type Manifest struct {
-	Name        string `yaml:"name"`
+	Name        string `yaml:"name" validate:"required"`
 	Description string `yaml:"description"`
 	Author      string `yaml:"author"`
 	ProjectPage string `yaml:"projectPage"`
@@ -35,4 +36,10 @@ func NewManifestFromFile(path string) (*Manifest, error) {
 		return nil, err
 	}
 	return &manifest, nil
+}
+
+func (m *Manifest) Validate() error {
+	var validate *validator.Validate
+	validate = validator.New()
+	return validate.Struct(m)
 }

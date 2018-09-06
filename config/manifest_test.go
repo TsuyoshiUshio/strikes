@@ -8,6 +8,7 @@ import (
 
 	"github.com/bouk/monkey"
 	"github.com/stretchr/testify/assert"
+	validator "gopkg.in/go-playground/validator.v9"
 )
 
 func TestReadManifest(t *testing.T) {
@@ -56,5 +57,15 @@ func TestReadManifestWithMissingColumn(t *testing.T) {
 		_, _ = NewManifestFromFile("./test-fixture/manifest-wrong-yaml/manifest.yaml")
 	})
 	assert.Regexp(t, "Cannot unmarshall the Manifest file: yaml: mapping values are not allowed in this context\n", output)
+
+}
+
+func TestValidateManifest(t *testing.T) {
+	manifest, _ := NewManifestFromFile("./test-fixture/manifest-validation-fail/manifest.yaml")
+	err := manifest.Validate()
+	validationErrors := err.(validator.ValidationErrors)
+	assert.Equal(t, "required", validationErrors[0].Tag())
+	assert.Equal(t, "Name", validationErrors[0].Field())
+	assert.Equal(t, "", validationErrors[0].Value())
 
 }
