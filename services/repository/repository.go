@@ -10,7 +10,7 @@ import (
 // GET: repository.simplearchitect.club/api/assetserveruri // Repository URL
 // In production, this endpoint will be protected by Azure AD
 func GetRepositoryAccessToken() (*RepositoryAccessToken, error) {
-	url := "https://repository.simplearchitect.club/api/assetserveruri"
+	url := RepositoryBaseURL + "assetserveruri"
 
 	resp, err := http.Get(url)
 	if err != nil {

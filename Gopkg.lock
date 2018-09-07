@@ -41,6 +41,12 @@
   version = "v10.15.2"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/MakeNowJust/heredoc"
+  packages = ["."]
+  revision = "e9091a26100e9cfb2b6a8f470085bfa541931a91"
+
+[[projects]]
   name = "github.com/bouk/monkey"
   packages = ["."]
   revision = "5df1f207ff77e025801505ae4d903133a0b4353f"
@@ -161,6 +167,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5dad4de7689ddbf4214e9f75a20590573282df4c49c4ef744fd87c76f66ba5b4"
+  inputs-digest = "0ceeb3a7323fbfdafa0ce4dc86369cf338d07607a8d50e0a6a05e30929567a43"
   solver-name = "gps-cdcl"
   solver-version = 1

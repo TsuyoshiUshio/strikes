@@ -94,6 +94,15 @@ func (b *BlockBlob) Download(filePath string) error {
 	return nil
 }
 
+func DownloadFromOfficialRepository(filePath, containerName, blobName string) error {
+	err := downloadFile(filePath, fmt.Sprintf("https://asset.simplearchitect.club/%s/%s", containerName, blobName))
+	if err != nil {
+		log.Fatalf("Can not download file: %v", err)
+		return err
+	}
+	return nil
+}
+
 func downloadFile(filepath, url string) error {
 	f, err := os.Create(filepath)
 	if err != nil {
