@@ -61,3 +61,7 @@
 [[constraint]]
   name = "gopkg.in/go-playground/validator.v9"
   version = "9.21.0"
+
+[[constraint]]
+  name = "github.com/Azure/azure-storage-blob-go"
+  version = "0.2.0"

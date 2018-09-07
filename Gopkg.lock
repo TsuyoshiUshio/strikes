@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/Azure/azure-pipeline-go"
+  packages = ["pipeline"]
+  revision = "7571e8eb0876932ab505918ff7ed5107773e5ee2"
+  version = "0.1.7"
+
+[[projects]]
   name = "github.com/Azure/azure-sdk-for-go"
   packages = [
     "services/resources/mgmt/2018-02-01/resources",
@@ -11,6 +17,12 @@
   ]
   revision = "4650843026a7fdec254a8d9cf893693a254edd0b"
   version = "v16.2.1"
+
+[[projects]]
+  name = "github.com/Azure/azure-storage-blob-go"
+  packages = ["2018-03-28/azblob"]
+  revision = "bb46532f68b79e9e1baca8fb19a382ef5d40ed33"
+  version = "0.2.0"
 
 [[projects]]
   name = "github.com/Azure/go-autorest"
@@ -149,6 +161,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5419be4289a388f2e808d92063efa655947e61b0eb49be73569a7a5a0a432529"
+  inputs-digest = "5dad4de7689ddbf4214e9f75a20590573282df4c49c4ef744fd87c76f66ba5b4"
   solver-name = "gps-cdcl"
   solver-version = 1
