@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"encoding/json"
 	"errors"
 	"io"
 	"io/ioutil"
@@ -157,4 +158,35 @@ func NewFixturePackage() *fixturePackage {
 		ExpectedBody:        expectedBody,
 		ExpectedStatusCode:  http.StatusCreated,
 	}
+}
+
+func TestGetPackageByName(t *testing.T) {
+	ExpectedPackageName := "foo"
+	ExpectedPackage := NewPackageWithCurrentTime(
+		ExpectedPackageName,
+		"desc foo",
+		"bar",
+		"https://foo.bar.com",
+		"https://www.foo.bar.com",
+		"1.0.0",
+		"release foo",
+		"Terraform",
+	)
+	ExpectedURL := RepositoryBaseURL + "package?name=" + ExpectedPackageName
+	var ActualURL string
+	fakeGet := func(url string) (resp *http.Response, err error) {
+		ActualURL = url
+		jsonPackage, _ := json.Marshal(ExpectedPackage)
+		result := &http.Response{
+			StatusCode: http.StatusOK,
+			Body:       nopCloser{strings.NewReader(string(jsonPackage))},
+		}
+		return result, nil
+	}
+	patch := monkey.Patch(http.Get, fakeGet)
+	defer patch.Unpatch()
+	p, err := GetPackage(ExpectedPackageName)
+	assert.Nil(t, err)
+	assert.Equal(t, ExpectedPackageName, p.Name)
+	assert.Equal(t, ExpectedURL, ActualURL)
 }
