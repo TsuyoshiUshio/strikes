@@ -19,14 +19,8 @@ func TestDownloadNormalScenario(t *testing.T) {
 	fixture := newFixture()
 	fixture.SetUp(ExpectedContent)
 
-	httpPatch := monkey.Patch(http.Get, fixture.FakeGet)
-	defer httpPatch.Unpatch()
-	osPatch := monkey.Patch(os.Create, fixture.FakeCreate)
-	defer osPatch.Unpatch()
-
-	err := DownloadFile(ExpectedFileName, ExpectedUrl)
+	err := fixture.Execute(DownloadFile, ExpectedFileName, ExpectedUrl)
 	assert.Nil(t, err)
-
 	fixture.GetContent()
 
 	assert.Equal(t, ExpectedFileName, fixture.ActualFileName, "Input filename is wrong")
@@ -70,6 +64,15 @@ func (f *parameterFixture) SetUp(expectedContent string) {
 		}, nil
 	}
 
+}
+
+func (f *parameterFixture) Execute(downloadFile func(string, string) error, expectedFileName string, expectedUrl string) error {
+	httpPatch := monkey.Patch(http.Get, f.FakeGet)
+	defer httpPatch.Unpatch()
+	osPatch := monkey.Patch(os.Create, f.FakeCreate)
+	defer osPatch.Unpatch()
+
+	return downloadFile(expectedFileName, expectedUrl)
 }
 
 func (f *parameterFixture) GetContent() {
