@@ -13,6 +13,7 @@ import (
 
 const (
 	RepositoryBaseURL = "https://repository.simplearchitect.club/api/"
+	AssetBaseURL      = "https://asset.simplearchitect.club/"
 )
 
 type RepositoryAccessToken struct {
@@ -101,4 +102,8 @@ func (p *Package) Create() (*http.Response, error) {
 
 func (p *Package) Marshal() ([]byte, error) {
 	return json.Marshal(p)
+}
+
+func (p *Package) GetCircuitZipURL() string {
+	return AssetBaseURL + p.Name + "/" + p.LatestVersion() + "/" + "circuit/" + "circuit.zip"
 }

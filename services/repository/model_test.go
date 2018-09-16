@@ -24,3 +24,17 @@ func TestLatestVersion(t *testing.T) {
 	latestVersion := p.LatestVersion()
 	assert.Equal(t, Expected, latestVersion)
 }
+
+func TestAssetCircuitZipURL(t *testing.T) {
+	ExpectedUrl := AssetBaseURL + "foo/" + "1.0.0/" + "circuit/" + "circuit.zip"
+	p := &Package{
+		Name: "foo",
+		Releases: &[]Release{
+			Release{
+				Version: "1.0.0",
+			},
+		},
+	}
+	ActualUrl := p.GetCircuitZipURL()
+	assert.Equal(t, ExpectedUrl, ActualUrl)
+}
