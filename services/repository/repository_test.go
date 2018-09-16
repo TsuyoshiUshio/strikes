@@ -33,7 +33,7 @@ func TestGetRepositoryToken(t *testing.T) {
 		actualURL = url
 
 		return &http.Response{
-			Body: nopCloser{strings.NewReader(responseDoc)},
+			Body: helpers.NopCloser{strings.NewReader(responseDoc)},
 		}, nil
 	}
 	patch := monkey.Patch(http.Get, fakeGet)
@@ -46,13 +46,6 @@ func TestGetRepositoryToken(t *testing.T) {
 	assert.Equal(t, expectedContainerName, token.ContainerName)
 	assert.Equal(t, expectedSASQueryParameter, token.SASQueryParameter)
 }
-
-// Fake Tool for enabling io.ReadCloser
-type nopCloser struct {
-	io.Reader
-}
-
-func (nopCloser) Close() error { return nil }
 
 func TestCreateNormalCase(t *testing.T) {
 
@@ -179,7 +172,7 @@ func TestGetPackageByName(t *testing.T) {
 		jsonPackage, _ := json.Marshal(ExpectedPackage)
 		result := &http.Response{
 			StatusCode: http.StatusOK,
-			Body:       nopCloser{strings.NewReader(string(jsonPackage))},
+			Body:       helpers.NopCloser{strings.NewReader(string(jsonPackage))},
 		}
 		return result, nil
 	}

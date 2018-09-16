@@ -5,7 +5,6 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/TsuyoshiUshio/strikes/helpers"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -22,8 +21,8 @@ func TestZipScenario(t *testing.T) {
 
 	os.MkdirAll(tempPath, os.ModePerm)
 	zipFilePath := filepath.Join(tempPath, "circuit.zip")
-	helpers.Zip(filepath.Join("..", "samples", "hello-world", "circuit"), zipFilePath)
-	helpers.UnZip(zipFilePath, tempPath)
+	Zip(filepath.Join("..", "samples", "hello-world", "circuit"), zipFilePath)
+	UnZip(zipFilePath, tempPath)
 	manifestPath := filepath.Join(tempPath, "circuit", "manifest.yaml")
 	if _, err := os.Stat(manifestPath); os.IsNotExist(err) {
 		assert.Fail(t, "Unzipped file  manifest can not found at :"+manifestPath)
