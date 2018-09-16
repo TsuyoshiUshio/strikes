@@ -65,11 +65,20 @@ func parseValuesHcl(filePath string) (*map[string]string, error) {
 }
 
 func configureValues(values *map[string]string, args []string) (*map[string]string, error) {
-	// m := make(map[string]string)
-	// for _, key := range *getMapKeys(values) {
+	parameters, err := parseValuesArgs(args)
+	if err != nil {
+		return nil, err
+	}
 
-	// }
-	return nil, nil
+	m := make(map[string]string)
+	for _, key := range *getMapKeys(values) {
+		if (*parameters)[key] != "" {
+			m[key] = (*parameters)[key]
+		} else {
+			m[key] = (*values)[key]
+		}
+	}
+	return &m, nil
 }
 
 func parseValuesArgs(args []string) (*map[string]string, error) {

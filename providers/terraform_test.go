@@ -54,26 +54,26 @@ func TestParseArgsWorngParameterCase(t *testing.T) {
 	assert.Equal(t, ExpectedError, err.Error())
 }
 
-// func TestConfigureValues(t *testing.T) {
-// 	ExpectedEnvironmentBaseName := "foo"
-// 	ExpectedResourceGroup := "bar"
-// 	ExpectedPackageSubDir := "foo/2.0.0/bar.zip"
-// 	args := []string{
-// 		"--set",
-// 		"environment_base_name=" + ExpectedEnvironmentBaseName,
-// 		"--set",
-// 		"packages_sub_dir=" + ExpectedPackageSubDir,
-// 		"bar",
-// 	}
-// 	m := make(map[string]string)
-// 	m["environment_base_name"] = "foobar"
-// 	m["resource_group"] = ExpectedResourceGroup
-// 	m["packages_sub_dir"] = "foo"
+func TestConfigureValues(t *testing.T) {
+	ExpectedEnvironmentBaseName := "foo"
+	ExpectedResourceGroup := "bar"
+	ExpectedPackageSubDir := "foo/2.0.0/bar.zip"
+	args := []string{
+		"--set",
+		"environment_base_name=" + ExpectedEnvironmentBaseName,
+		"--set",
+		"packages_sub_dir=" + ExpectedPackageSubDir,
+		"bar",
+	}
+	m := make(map[string]string)
+	m["environment_base_name"] = "foobar"
+	m["resource_group"] = ExpectedResourceGroup
+	m["packages_sub_dir"] = "foo"
 
-// 	result, err := configureValues(&m, args)
-// 	assert.Nil(t, err)
-// 	assert.Equal(t, ExpectedEnvironmentBaseName, (*result)["environment_base_name"])
-// 	assert.Equal(t, ExpectedResourceGroup, (*result)["resource_group"])
-// 	assert.Equal(t, ExpectedPackageSubDir, (*result)["package_sub_dir"])
+	result, err := configureValues(&m, args)
+	assert.Nil(t, err)
+	assert.Equal(t, ExpectedEnvironmentBaseName, (*result)["environment_base_name"])
+	assert.Equal(t, ExpectedResourceGroup, (*result)["resource_group"])
+	assert.Equal(t, ExpectedPackageSubDir, (*result)["packages_sub_dir"])
 
-// }
+}
