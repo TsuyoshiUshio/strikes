@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"reflect"
 	"strings"
 
 	"github.com/TsuyoshiUshio/strikes/config"
+	"github.com/TsuyoshiUshio/strikes/helpers"
 	"github.com/hashicorp/hcl"
 )
 
@@ -37,6 +39,21 @@ func (t *TerraformProvider) CreateResource(args []string) error {
 		log.Fatalf("Can not find the terraform command on your path. Please check if it is on your Path environment variables")
 	}
 
+	// Execute the terraform init
+
+	fmt.Println("Initialiing terraform ...")
+	cmd := exec.Command("terraform", "init")
+	if helpers.IsDebugEnabled() {
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+	}
+	_, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Fatalf("Can not execute the terraform init: %v\n", err)
+	}
+
+	// Execute the terraform plan
+
 	// Read and Parse Values.hcl
 	defaultValues, err := parseValuesHcl(filepath.Join(t.TargetDir, "values.hcl"))
 	if err != nil {
@@ -48,15 +65,10 @@ func (t *TerraformProvider) CreateResource(args []string) error {
 		return err
 	}
 
-	fmt.Println("Initialiing terraform ...")
-	cmd := exec.Command("terraform", "init")
-	result, err := cmd.CombinedOutput()
-	if err != nil {
-		log.Fatalf("Can not execute the terraform init: %v\n", err)
-	}
-
-	// Check if there is terraform command.
-	// Execute the terraform init
+	// translate parameter fit for terraformf parameters
+	_ = getTerraformParameter(parameterValues)
+	// then append terraform options.
+	// Execute the terraform apply
 
 	// If we could, show customer to the endpoint of the Azure Functions.
 
@@ -140,6 +152,11 @@ func getMapKeys(m *map[string]string) *[]string {
 	return &strkeys
 }
 
-func getTerraformParameter(values *map[string]string) (*[]string, error) {
-	return nil, nil
+func getTerraformParameter(values *map[string]string) *[]string {
+	keys := getMapKeys(values)
+	parameters := make([]string, len(*keys), len(*keys))
+	for i, k := range *keys {
+		parameters[i] = fmt.Sprintf("-var '%s=%s'", k, (*values)[k])
+	}
+	return &parameters
 }

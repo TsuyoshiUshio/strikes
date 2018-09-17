@@ -77,3 +77,13 @@ func TestConfigureValues(t *testing.T) {
 	assert.Equal(t, ExpectedPackageSubDir, (*result)["packages_sub_dir"])
 
 }
+
+func TestGetTerraformParameter(t *testing.T) {
+	// -var 'foo=bar' is the terraform parameters.
+	m := make(map[string]string)
+	m["foo"] = "bar"
+	m["hoge"] = "fuga"
+	results := getTerraformParameter(&m)
+	assert.Equal(t, "-var 'foo=bar'", (*results)[0])
+	assert.Equal(t, "-var 'hoge=fuga'", (*results)[1])
+}

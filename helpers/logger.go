@@ -12,6 +12,15 @@ const (
 	EnvLogFile = "ST_LOG_PATH"
 )
 
+func IsDebugEnabled() bool {
+	logLevel := os.Getenv(EnvLog)
+	if "DEBUG" == logLevel {
+		return true
+	} else {
+		return false
+	}
+}
+
 func SetUpLogger() {
 	value, isPresent := os.LookupEnv(EnvLog)
 	var minLevel string
