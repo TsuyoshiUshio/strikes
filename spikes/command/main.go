@@ -22,7 +22,7 @@ func main() {
 		"init",
 	}
 	cmd := exec.Command("terraform", commandAndArgs...) // ...enable us to pass them slice
-	stdout, err := cmd.StderrPipe()                     // piping test
+	stdout, err := cmd.StdoutPipe()                     // piping test
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -45,8 +45,10 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println("finished.")
-	fmt.Println("------- output ")
-	fmt.Println(buf.String()) // doesn't work
+
+	fmt.Println("------- err output ")
+	fmt.Println(buf.String())
+
 	fmt.Println("-------stdout")
 	fmt.Println(outBuf.String())
 
