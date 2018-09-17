@@ -1,7 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"strconv"
@@ -18,13 +22,34 @@ func main() {
 		"init",
 	}
 	cmd := exec.Command("terraform", commandAndArgs...) // ...enable us to pass them slice
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err := cmd.Run() // Run for Wait for the execution.
+	stdout, err := cmd.StderrPipe()                     // piping test
+	if err != nil {
+		log.Fatal(err)
+	}
+	var outBuf bytes.Buffer
+	StdOutMulti := io.MultiWriter(&outBuf, os.Stdout)
+	cmd.Stdout = StdOutMulti
+
+	var buf bytes.Buffer
+	multiWriter := io.MultiWriter(&buf, os.Stderr)
+	cmd.Stderr = multiWriter
+	err = cmd.Start() // Run for Wait for the execution.
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println("-------poped output")
+	result, _ := ioutil.ReadAll(stdout)
+	fmt.Println(string(result)) // works
+
+	if err = cmd.Wait(); err != nil {
+		log.Fatal(err)
+	}
 	fmt.Println("finished.")
+	fmt.Println("------- output ")
+	fmt.Println(buf.String()) // doesn't work
+	fmt.Println("-------stdout")
+	fmt.Println(outBuf.String())
+
 }
 
 func isCommandAvailable(name string) bool {
