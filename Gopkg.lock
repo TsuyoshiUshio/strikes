@@ -108,6 +108,12 @@
   revision = "ef8a98b0bbce4a65b5aa4c368430a80ddc533168"
 
 [[projects]]
+  name = "github.com/hashicorp/logutils"
+  packages = ["."]
+  revision = "a335183dfd075f638afcc820c90591ca3c97eba6"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/marstr/guid"
   packages = ["."]
   revision = "8bd9a64bf37eb297b492a4101fb28e80ac0b290f"
@@ -167,6 +173,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0ceeb3a7323fbfdafa0ce4dc86369cf338d07607a8d50e0a6a05e30929567a43"
+  inputs-digest = "7f4bde0bbbb0691df738bd4ed8803f99af74bd4d232ef1627e550c09a4ccdccb"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -6,10 +6,12 @@ import (
 	"time"
 
 	"github.com/TsuyoshiUshio/strikes/command"
+	"github.com/TsuyoshiUshio/strikes/helpers"
 	"github.com/urfave/cli"
 )
 
 func main() {
+	helpers.SetUpLogger()
 	app := cli.NewApp()
 	app.Name = "Lightning Strikes"
 	app.Usage = "The Azure Functions Package management tool"

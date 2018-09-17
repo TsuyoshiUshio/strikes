@@ -2,8 +2,11 @@ package providers
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
+	"os/exec"
+	"path/filepath"
 	"reflect"
 	"strings"
 
@@ -19,14 +22,39 @@ type TerraformProvider struct {
 	TargetDir string
 }
 
-func (t *TerraformProvider) IsProviderCommandExists() error {
+func (t *TerraformProvider) IsProviderCommandExists() bool {
 	// Check is there is terraform command is on the path.
-	return nil
+	cmd := exec.Command("terraform", "--help")
+	err := cmd.Run()
+	if err != nil {
+		return false
+	}
+	return true
 }
 
 func (t *TerraformProvider) CreateResource(args []string) error {
+	if !t.IsProviderCommandExists() {
+		log.Fatalf("Can not find the terraform command on your path. Please check if it is on your Path environment variables")
+	}
+
 	// Read and Parse Values.hcl
+	defaultValues, err := parseValuesHcl(filepath.Join(t.TargetDir, "values.hcl"))
+	if err != nil {
+		return err
+	}
 	// If there are parameters which is the same as the Values.hcl, override it.
+	parameterValues, err := configureValues(defaultValues, args)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Initialiing terraform ...")
+	cmd := exec.Command("terraform", "init")
+	result, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Fatalf("Can not execute the terraform init: %v\n", err)
+	}
+
 	// Check if there is terraform command.
 	// Execute the terraform init
 
