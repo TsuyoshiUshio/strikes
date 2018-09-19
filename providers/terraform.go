@@ -34,7 +34,7 @@ func (t *TerraformProvider) IsProviderCommandExists() bool {
 	return true
 }
 
-func (t *TerraformProvider) CreateResource(args []string) error {
+func (t *TerraformProvider) CreateResource(args []string) {
 	if !t.IsProviderCommandExists() {
 		log.Fatalf("Can not find the terraform command on your path. Please check if it is on your Path environment variables")
 	}
@@ -42,37 +42,40 @@ func (t *TerraformProvider) CreateResource(args []string) error {
 	// Execute the terraform init
 
 	fmt.Println("Initialiing terraform ...")
-	cmd := exec.Command("terraform", "init")
-	if helpers.IsDebugEnabled() {
+	t.executeTerraformCommand("init", []string{}, []string{}, false)
+
+	// translate parameter fit for terraformf parameters
+	argsParameters := t.composeTerraformParameter(args)
+	// then append terraform options.
+	optionalParameters := []string{}
+
+	// Execute terraform plan
+
+	fmt.Println("Executing terraform plan ...")
+
+	t.executeTerraformCommand("plan", *argsParameters, optionalParameters, false)
+
+	// Execute terraform apply
+
+	fmt.Println("Executing terraform apply ...")
+
+	t.executeTerraformCommand("apply", *argsParameters, optionalParameters, true)
+}
+
+func (t *TerraformProvider) executeTerraformCommand(subCommand string, argsParameters []string, optionalParameters []string, isDump bool) {
+	terraformParameter := append([]string{subCommand}, argsParameters...)
+	parameters := append(terraformParameter, optionalParameters...)
+
+	cmd := exec.Command("terraform", parameters...)
+	cmd.Path = t.TargetDir
+	if helpers.IsDebugEnabled() || isDump { // In case of Debug or specifed dump option, it will emit the results.
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 	}
 	_, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Fatalf("Can not execute the terraform init: %v\n", err)
+		log.Fatalf("Can not execute the terraform %s: %v\n", subCommand, err)
 	}
-
-	// Execute the terraform plan
-
-	// Read and Parse Values.hcl
-	defaultValues, err := parseValuesHcl(filepath.Join(t.TargetDir, "values.hcl"))
-	if err != nil {
-		return err
-	}
-	// If there are parameters which is the same as the Values.hcl, override it.
-	parameterValues, err := configureValues(defaultValues, args)
-	if err != nil {
-		return err
-	}
-
-	// translate parameter fit for terraformf parameters
-	_ = getTerraformParameter(parameterValues)
-	// then append terraform options.
-	// Execute the terraform apply
-
-	// If we could, show customer to the endpoint of the Azure Functions.
-
-	return nil
 }
 
 func (t *TerraformProvider) DeleteResource() error {
@@ -159,4 +162,20 @@ func getTerraformParameter(values *map[string]string) *[]string {
 		parameters[i] = fmt.Sprintf("-var '%s=%s'", k, (*values)[k])
 	}
 	return &parameters
+}
+
+func (t *TerraformProvider) composeTerraformParameter(args []string) *[]string {
+	defaultValues, err := parseValuesHcl(filepath.Join(t.TargetDir, "values.hcl"))
+	if err != nil {
+		log.Fatalf("Can not find values.hcl on the target path %v\n", t.TargetDir)
+	}
+	// If there are parameters which is the same as the Values.hcl, override it.
+	parameterValues, err := configureValues(defaultValues, args)
+	if err != nil {
+		log.Fatalf("Can not merge manifest values and parameter values. double check the arguments. ManifestValues: %v, Args: %v\n", defaultValues, args)
+	}
+
+	// translate parameter fit for terraformf parameters
+	return getTerraformParameter(parameterValues)
+
 }
