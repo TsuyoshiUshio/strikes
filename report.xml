@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+	<testsuite tests="7" failures="0" time="0.000" name="github.com/TsuyoshiUshio/strikes/config">
+		<properties>
+			<property name="go.version" value="go1.10.3"></property>
+		</properties>
+		<testcase classname="config" name="TestGetHomeDir" time="0.000"></testcase>
+		<testcase classname="config" name="TestGetPowerPlantConfig" time="0.000"></testcase>
+		<testcase classname="config" name="TestReadManifest" time="0.000"></testcase>
+		<testcase classname="config" name="TestReadManifestWithoutFile" time="0.000"></testcase>
+		<testcase classname="config" name="TestReadManifestWithMissingColumn" time="0.000"></testcase>
+		<testcase classname="config" name="TestValidateManifestWithSuccess" time="0.000"></testcase>
+		<testcase classname="config" name="TestValidateManifestWithFailure" time="0.000"></testcase>
+	</testsuite>
+	<testsuite tests="3" failures="0" time="0.000" name="github.com/TsuyoshiUshio/strikes/helpers">
+		<properties>
+			<property name="go.version" value="go1.10.3"></property>
+		</properties>
+		<testcase classname="helpers" name="TestDownloadNormalScenario" time="0.000"></testcase>
+		<testcase classname="helpers" name="TestLoggerNormalCase" time="0.000"></testcase>
+		<testcase classname="helpers" name="TestZipScenario" time="0.000"></testcase>
+	</testsuite>
+	<testsuite tests="5" failures="0" time="0.022" name="github.com/TsuyoshiUshio/strikes/providers">
+		<properties>
+			<property name="go.version" value="go1.10.3"></property>
+		</properties>
+		<testcase classname="providers" name="TestParseValuesHCL" time="0.000"></testcase>
+		<testcase classname="providers" name="TestParseArgsNormalCase" time="0.000"></testcase>
+		<testcase classname="providers" name="TestParseArgsWorngParameterCase" time="0.000"></testcase>
+		<testcase classname="providers" name="TestConfigureValues" time="0.000"></testcase>
+		<testcase classname="providers" name="TestGetTerraformParameter" time="0.000"></testcase>
+	</testsuite>
+	<testsuite tests="7" failures="0" time="0.000" name="github.com/TsuyoshiUshio/strikes/services/repository">
+		<properties>
+			<property name="go.version" value="go1.10.3"></property>
+		</properties>
+		<testcase classname="repository" name="TestLatestVersion" time="0.000"></testcase>
+		<testcase classname="repository" name="TestAssetCircuitZipURL" time="0.000"></testcase>
+		<testcase classname="repository" name="TestGetRepositoryToken" time="0.000"></testcase>
+		<testcase classname="repository" name="TestCreateNormalCase" time="0.000"></testcase>
+		<testcase classname="repository" name="TestCreateErrorCase" time="0.000"></testcase>
+		<testcase classname="repository" name="TestCreateBadRequest" time="0.000"></testcase>
+		<testcase classname="repository" name="TestGetPackageByName" time="0.000"></testcase>
+	</testsuite>
+	<testsuite tests="3" failures="0" time="0.000" name="github.com/TsuyoshiUshio/strikes/services/storage">
+		<properties>
+			<property name="go.version" value="go1.10.3"></property>
+		</properties>
+		<testcase classname="storage" name="TestCreateStorageAccountIfNotExists" time="0.000"></testcase>
+		<testcase classname="storage" name="TestCreateStorageAccountDeleteIfExists" time="0.000"></testcase>
+		<testcase classname="storage" name="TestConvert" time="0.000"></testcase>
+	</testsuite>
+</testsuites>
