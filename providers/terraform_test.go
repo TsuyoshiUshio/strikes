@@ -75,7 +75,6 @@ func TestConfigureValues(t *testing.T) {
 	assert.Equal(t, ExpectedEnvironmentBaseName, (*result)["environment_base_name"])
 	assert.Equal(t, ExpectedResourceGroup, (*result)["resource_group"])
 	assert.Equal(t, ExpectedPackageSubDir, (*result)["packages_sub_dir"])
-
 }
 
 func TestGetTerraformParameter(t *testing.T) {

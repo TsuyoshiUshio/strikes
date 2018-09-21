@@ -1,6 +1,7 @@
 package providers
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -17,11 +18,35 @@ import (
 )
 
 type Provider interface {
+	CreateResource(args []string)
 }
 
 type TerraformProvider struct {
 	Manifest  *config.Manifest
 	TargetDir string
+}
+
+type DeploymentResult struct {
+	Configrations *map[string]string
+}
+
+func (d DeploymentResult) GetResourceGroup() string {
+	return (*d.Configrations)["resource_group"]
+}
+
+func (d DeploymentResult) GetConfigrationsJosn() string {
+	content, err := json.Marshal(d.Configrations)
+	if err != nil {
+		log.Fatalf("Can not parse the configration to json: %v\n", err.Error())
+	}
+	return string(content)
+}
+
+func NewTerraformProvider(manifest *config.Manifest, targetDir string) *TerraformProvider {
+	return &TerraformProvider{
+		Manifest:  manifest,
+		TargetDir: targetDir,
+	}
 }
 
 func (t *TerraformProvider) IsProviderCommandExists() bool {
@@ -34,7 +59,7 @@ func (t *TerraformProvider) IsProviderCommandExists() bool {
 	return true
 }
 
-func (t *TerraformProvider) CreateResource(args []string) {
+func (t *TerraformProvider) CreateResource(args []string) *DeploymentResult {
 	if !t.IsProviderCommandExists() {
 		log.Fatalf("Can not find the terraform command on your path. Please check if it is on your Path environment variables")
 	}
@@ -45,7 +70,7 @@ func (t *TerraformProvider) CreateResource(args []string) {
 	t.executeTerraformCommand("init", []string{}, []string{}, false)
 
 	// translate parameter fit for terraformf parameters
-	argsParameters := t.composeTerraformParameter(args)
+	argsParameters, configrations := t.composeTerraformParameter(args)
 	// then append terraform options.
 	optionalParameters := []string{}
 
@@ -60,6 +85,10 @@ func (t *TerraformProvider) CreateResource(args []string) {
 	fmt.Println("Executing terraform apply ...")
 
 	t.executeTerraformCommand("apply", *argsParameters, optionalParameters, true)
+
+	return &DeploymentResult{
+		Configrations: configrations,
+	}
 }
 
 func (t *TerraformProvider) executeTerraformCommand(subCommand string, argsParameters []string, optionalParameters []string, isDump bool) {
@@ -164,7 +193,7 @@ func getTerraformParameter(values *map[string]string) *[]string {
 	return &parameters
 }
 
-func (t *TerraformProvider) composeTerraformParameter(args []string) *[]string {
+func (t *TerraformProvider) composeTerraformParameter(args []string) (*[]string, *map[string]string) {
 	defaultValues, err := parseValuesHcl(filepath.Join(t.TargetDir, "values.hcl"))
 	if err != nil {
 		log.Fatalf("Can not find values.hcl on the target path %v\n", t.TargetDir)
@@ -176,6 +205,6 @@ func (t *TerraformProvider) composeTerraformParameter(args []string) *[]string {
 	}
 
 	// translate parameter fit for terraformf parameters
-	return getTerraformParameter(parameterValues)
+	return getTerraformParameter(parameterValues), parameterValues
 
 }

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	st "github.com/Azure/azure-sdk-for-go/storage"
+	"github.com/TsuyoshiUshio/strikes/config"
 )
 
 type StrikesInstance struct {
@@ -30,4 +31,39 @@ func (s *StrikesInstance) ConvertEntity(table *st.Table) *st.Entity {
 		Table:        table,
 	}
 	return entity
+}
+
+func InsertOrUpdate(instance *StrikesInstance) error {
+	table, err := getTableReference()
+	if err != nil {
+		return err
+	}
+	entity := instance.ConvertEntity(table)
+	err = entity.InsertOrReplace(&st.EntityOptions{})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func getTableReference() (*st.Table, error) {
+	// read the powerplant config
+	powerPlantConfig, err := getPowerPlantConfig()
+	if err != nil {
+		return nil, nil
+	}
+	client, err := st.NewBasicClient(powerPlantConfig.StorageAccountName, powerPlantConfig.StorageAccountKey)
+	if err != nil {
+		return nil, err
+	}
+	tableService := client.GetTableService()
+	table := tableService.GetTableReference(DEFAULT_STORAGE_TABLE_NAME)
+	return table, nil
+}
+
+func getPowerPlantConfig() (*config.PowerPlantConfig, error) {
+	configContext, err := config.NewConfigContext()
+	if err != nil {
+		return nil, err
+	}
+	return configContext.GetPowerPlantConfig()
 }
