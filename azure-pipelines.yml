@@ -45,9 +45,9 @@ steps:
 - task: PublishTestResults@2
   inputs:
     testRunner: JUnit
-    testResultFile: $(System.DefaultWorkingDirectory)/**/report.xml
+    testResultsFiles: $(System.DefaultWorkingDirectory)/**/report.xml
 
 - task: PublishCodeCoverageResults@1
   inputs:
-    codeCoverageTool: Covertura 
+    codeCoverageTool: Cobertura 
     summaryFileLocation: $(System.DefaultWorkingDirectory)/**/coverage.txt
