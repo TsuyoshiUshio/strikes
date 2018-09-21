@@ -4,3 +4,5 @@ vendor
 report.xml
 coverage.txt
 coverage.xml
+coverage.json
+coverage.html
