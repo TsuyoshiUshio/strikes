@@ -1,2 +1,6 @@
 vendor
 .config
+
+report.xml
+coverage.txt
+coverage.xml
