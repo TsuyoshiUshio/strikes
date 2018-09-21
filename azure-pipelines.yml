@@ -34,7 +34,7 @@ steps:
   workingDirectory: '$(modulePath)'
   displayName: 'Get dependencies, then build'
 
-- script: 
+- script: |
     go get github.com/jstemmer/go-junit-report
     go get github.com/t-yuki/gocover-cobertura
 
