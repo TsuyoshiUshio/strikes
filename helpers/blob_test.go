@@ -40,16 +40,20 @@ func TestNewBlockBlobWithSASQueryParameter(t *testing.T) {
 }
 
 func TestUpload(t *testing.T) {
+	ExpectedBody := "foo"
+	ExpectedBlockBlobURL := "https://foo.blob.core.windows.net/bar/baz"
 	tempFile, err := ioutil.TempFile(".", "uploadTest")
 	if err != nil {
 		panic(err)
 	}
-	tempFile.WriteString("foo")
+	tempFile.WriteString(ExpectedBody)
 	tempFile.Close()
 	defer os.Remove(tempFile.Name())
 	var ActualBodyReader io.ReadSeeker
-	fakeUpload := func(_ azblob.BlockBlobURL, _ context.Context, body io.ReadSeeker, _ azblob.BlobHTTPHeaders, _ azblob.Metadata, _ azblob.BlobAccessConditions) (*azblob.BlockBlobUploadResponse, error) {
+	var ActualBlockBlobURL azblob.BlockBlobURL
+	fakeUpload := func(blockBlobURL azblob.BlockBlobURL, _ context.Context, body io.ReadSeeker, _ azblob.BlobHTTPHeaders, _ azblob.Metadata, _ azblob.BlobAccessConditions) (*azblob.BlockBlobUploadResponse, error) {
 		ActualBodyReader = body
+		ActualBlockBlobURL = blockBlobURL
 		return nil, nil
 	}
 	var b azblob.BlockBlobURL
@@ -59,5 +63,6 @@ func TestUpload(t *testing.T) {
 	blockBlob.Upload(tempFile.Name())
 	ActualBody, _ := ioutil.ReadAll(ActualBodyReader)
 
-	assert.Equal(t, "foo", string(ActualBody))
+	assert.Equal(t, ExpectedBody, string(ActualBody), "expected body is wrong")
+	assert.Equal(t, ExpectedBlockBlobURL, ActualBlockBlobURL.String(), "blob url is wrong.")
 }
