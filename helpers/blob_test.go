@@ -4,8 +4,10 @@ import (
 	"context"
 	"io"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/Azure/azure-storage-blob-go/2018-03-28/azblob"
@@ -65,4 +67,39 @@ func TestUpload(t *testing.T) {
 
 	assert.Equal(t, ExpectedBody, string(ActualBody), "expected body is wrong")
 	assert.Equal(t, ExpectedBlockBlobURL, ActualBlockBlobURL.String(), "blob url is wrong.")
+}
+
+type StringReaderCloser struct {
+	Reader io.Reader
+}
+
+func (s *StringReaderCloser) Close() error {
+	return nil
+}
+func (s *StringReaderCloser) Read(b []byte) (n int, err error) {
+	return s.Reader.Read(b)
+}
+
+func TestDownload(t *testing.T) {
+	ExpectedContent := "foobar"
+	blockBlob := NewBlockBlob("foo", "bar", "baz")
+	fakeGet := func(url string) (resp *http.Response, err error) {
+		readerCloser := &StringReaderCloser{
+			Reader: strings.NewReader(ExpectedContent),
+		}
+		return &http.Response{
+			Body: readerCloser,
+		}, nil
+	}
+	monkey.Patch(http.Get, fakeGet)
+	defer monkey.Unpatch(http.Get)
+	tempFileName := "download.tmp"
+	blockBlob.Download(tempFileName)
+	defer os.Remove(tempFileName)
+	content, err := ioutil.ReadFile(tempFileName)
+	if err != nil {
+		panic(err)
+	}
+	assert.Equal(t, ExpectedContent, string(content))
+
 }
