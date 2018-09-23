@@ -21,7 +21,7 @@ func Exists(name string) bool {
 }
 
 func DeleteDirIfExists(dir string) error {
-	if _, err := os.Stat(dir); os.IsNotExist(err) {
+	if _, err := os.Stat(dir); !os.IsNotExist(err) {
 		if err := os.RemoveAll(dir); err != nil {
 			log.Fatal("Cannot remove directory: " + dir)
 			return err
