@@ -2,6 +2,8 @@
 
 Package manager for Azure Functions.
 
+[![Build Status](https://6packdevops.visualstudio.com/StrikesRepository/_apis/build/status/TsuyoshiUshio.strikes)](https://6packdevops.visualstudio.com/StrikesRepository/_build/latest?definitionId=16)
+
 # Motivation
 
 When I want to share the Azure Function code, it usualy require to set up other resources, like CosmosDB, Storage Account, EventHubs and so on. This project is inspired by [helm](https://docs.helm.sh/) which is the popular package manager for kubernetes. I'd like to do the same thing for Azure Functions.
