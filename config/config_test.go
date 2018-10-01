@@ -4,8 +4,10 @@ import (
 	"io/ioutil"
 	"os"
 	"os/user"
+	"path/filepath"
 	"testing"
 
+	"github.com/bouk/monkey"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -33,4 +35,35 @@ func TestGetPowerPlantConfig(t *testing.T) {
 	assert.Equal(t, "sastrikesdijjeqcx", config.StorageAccountName)
 	assert.Equal(t, "SomeKeys==", config.StorageAccountKey)
 
+}
+
+func TestGetConfig(t *testing.T) {
+	path := filepath.Join(".", "test-fixture", "config-basic", "config")
+	file, err := ioutil.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+	ActualFileName := ""
+	fakeReadFile := func(fileName string) ([]byte, error) {
+		ActualFileName = fileName
+		return file, nil
+	}
+	monkey.Patch(ioutil.ReadFile, fakeReadFile)
+	defer monkey.UnpatchAll()
+	getHomeDir := func() (string, error) {
+		return "baz", nil
+	}
+	context := ConfigContext{
+		ConfigDir:                "foo",
+		PowerPlantConfigFilePath: "bar",
+		GetHomeDir:               getHomeDir,
+	}
+	config, err := context.GetConfig()
+	if err != nil {
+		panic(err)
+	}
+	assert.Equal(t, "foo", config.ClientID)
+	assert.Equal(t, "bar", config.ClientSecret)
+	assert.Equal(t, "baz", config.SubscriptionID)
+	assert.Equal(t, "qux", config.TenantID)
 }

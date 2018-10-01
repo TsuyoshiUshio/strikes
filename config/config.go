@@ -86,6 +86,20 @@ func (c *ConfigContext) GetConfigFilePath() string {
 	return filepath.Join(c.ConfigDir, CONFIG_FILE_NAME)
 }
 
+func (c *ConfigContext) GetConfig() (*Config, error) {
+	configFile, err := ioutil.ReadFile(c.GetConfigFilePath())
+	if err != nil {
+		log.Fatalf("Cannot read the config file. Double check if there is config file on ~/.strikes/config. : %v\n", err)
+	}
+	var config Config
+	err = json.Unmarshal(configFile, &config)
+	if err != nil {
+		log.Printf("[DEBUG] Cannot unmarshal the config file. BODY: %s\n", string(configFile))
+		log.Fatalf("Cannot read the config file. Please check the contents of ~/.strikes/config. : %v\n", err)
+	}
+	return &config, nil
+}
+
 func (c *ConfigContext) GetPowerPlantConfigFilePath() string {
 	return filepath.Join(c.ConfigDir, POWER_PLANT_CONFIG_FILE_NAME)
 }
