@@ -94,14 +94,18 @@ func (t *TerraformProvider) CreateResource(args []string) *DeploymentResult {
 func (t *TerraformProvider) executeTerraformCommand(subCommand string, argsParameters []string, optionalParameters []string, isDump bool) {
 	terraformParameter := append([]string{subCommand}, argsParameters...)
 	parameters := append(terraformParameter, optionalParameters...)
-
+	for _, param := range parameters {
+		log.Printf("[DEBUG] Parameters: %s\n", param)
+	}
 	cmd := exec.Command("terraform", parameters...)
-	cmd.Path = t.TargetDir
+	cmd.Dir = t.TargetDir
 	if helpers.IsDebugEnabled() || isDump { // In case of Debug or specifed dump option, it will emit the results.
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 	}
-	_, err := cmd.CombinedOutput()
+	// output, err := cmd.CombinedOutput()
+	err := cmd.Run()
+	//	log.Printf("[DEBUG] %v", string(output))
 	if err != nil {
 		log.Fatalf("Can not execute the terraform %s: %v\n", subCommand, err)
 	}
@@ -207,4 +211,22 @@ func (t *TerraformProvider) composeTerraformParameter(args []string) (*[]string,
 	// translate parameter fit for terraformf parameters
 	return getTerraformParameter(parameterValues), parameterValues
 
+}
+
+func addServicePrincipalParameters(parameters []string) ([]string, error) {
+	c, err := config.NewConfigContext()
+	if err != nil {
+		return nil, err
+	}
+	conf, err := c.GetConfig()
+	if err != nil {
+		return nil, err
+	}
+
+	p := append(parameters, "-var", fmt.Sprintf("client_id='%s'", conf.ClientID))
+	p = append(p, "-var", fmt.Sprintf("client_secret='%s'", conf.ClientSecret))
+	p = append(p, "-var", fmt.Sprintf("subscription_id='%s'", conf.SubscriptionID))
+	p = append(p, "-var", fmt.Sprintf("tenant_id='%s'", conf.TenantID))
+
+	return p, nil
 }

@@ -1,10 +1,13 @@
 package providers
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 
+	"github.com/TsuyoshiUshio/strikes/config"
 	"github.com/bouk/monkey"
 	"github.com/stretchr/testify/assert"
 )
@@ -85,4 +88,41 @@ func TestGetTerraformParameter(t *testing.T) {
 	results := getTerraformParameter(&m)
 	assert.Equal(t, "-var 'foo=bar'", (*results)[0])
 	assert.Equal(t, "-var 'hoge=fuga'", (*results)[1])
+}
+
+func TestAddServicePrincipalParameters(t *testing.T) {
+	fakeNewConfigContext := func() (*config.ConfigContext, error) {
+		return &config.ConfigContext{}, nil
+	}
+	ExpectedClientID := "foo"
+	ExpectedClientSecret := "bar"
+	ExpectedSubscriptionID := "baz"
+	ExpectedTenantID := "qux"
+
+	fakeGetConfig := func(context *config.ConfigContext) (*config.Config, error) {
+		return &config.Config{
+			ClientID:       ExpectedClientID,
+			ClientSecret:   ExpectedClientSecret,
+			SubscriptionID: ExpectedSubscriptionID,
+			TenantID:       ExpectedTenantID,
+		}, nil
+	}
+	monkey.Patch(config.NewConfigContext, fakeNewConfigContext)
+	var conf *config.ConfigContext
+	monkey.PatchInstanceMethod(reflect.TypeOf(conf), "GetConfig", fakeGetConfig)
+	defer monkey.UnpatchAll()
+	param := []string{
+		"-var", "foo='bar'",
+	}
+	result, err := addServicePrincipalParameters(param)
+	assert.Nil(t, err, "Error should be nil")
+	assert.Equal(t, "-var", result[2])
+	assert.Equal(t, fmt.Sprintf("client_id='%s'", ExpectedClientID), result[3], "ClientID is wrong.")
+	assert.Equal(t, "-var", result[4])
+	assert.Equal(t, fmt.Sprintf("client_secret='%s'", ExpectedClientSecret), result[5], "ClientSecret is wrong.")
+	assert.Equal(t, "-var", result[6])
+	assert.Equal(t, fmt.Sprintf("subscription_id='%s'", ExpectedSubscriptionID), result[7], "SubscriptionID is wrong.")
+	assert.Equal(t, "-var", result[8])
+	assert.Equal(t, fmt.Sprintf("tenant_id='%s'", ExpectedTenantID), result[9], "TenantID is wrong.")
+
 }
