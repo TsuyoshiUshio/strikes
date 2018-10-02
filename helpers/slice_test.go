@@ -33,3 +33,43 @@ func TestFilterWithZeroCase(t *testing.T) {
 		})
 	assert.Equal(t, 0, len(output))
 }
+
+type Sample struct {
+	Name string
+}
+
+func TestMapNormalCase(t *testing.T) {
+	samples := []Sample{
+		Sample{Name: "ushio"},
+		Sample{Name: "yamada"},
+	}
+	output := Map(samples, func(s interface{}) interface{} {
+		return convertSample(s).Name
+	})
+	assert.Equal(t, "ushio", convertString(output[0]))
+	assert.Equal(t, "yamada", convertString(output[1]))
+}
+
+func TestMapNormalEmptyCase(t *testing.T) {
+	samples := []Sample{}
+	output := Map(samples, func(s interface{}) interface{} {
+		return convertSample(s).Name
+	})
+	assert.Equal(t, 0, len(output))
+}
+
+func convertSample(s interface{}) Sample {
+	if sample, ok := s.(Sample); ok {
+		return sample
+	} else {
+		panic("Can not convert sample.")
+	}
+}
+
+func convertString(s interface{}) string {
+	if str, ok := s.(string); ok {
+		return str
+	} else {
+		panic("The parameter is not string.")
+	}
+}
