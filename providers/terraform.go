@@ -188,13 +188,18 @@ func getMapKeys(m *map[string]string) *[]string {
 	return &strkeys
 }
 
-func getTerraformParameter(values *map[string]string) *[]string {
+func convertParameterMapToStringArray(values *map[string]string) *[]string {
 	keys := getMapKeys(values)
 	parameters := make([]string, len(*keys), len(*keys))
 	for i, k := range *keys {
 		parameters[i] = fmt.Sprintf("-var '%s=%s'", k, (*values)[k])
 	}
 	return &parameters
+}
+
+func getTerraformParameter(values *map[string]string) *[]string {
+	parameters := addServicePrincipalParameters(values)
+	return convertParameterMapToStringArray(parameters)
 }
 
 func (t *TerraformProvider) composeTerraformParameter(args []string) (*[]string, *map[string]string) {
@@ -213,20 +218,19 @@ func (t *TerraformProvider) composeTerraformParameter(args []string) (*[]string,
 
 }
 
-func addServicePrincipalParameters(parameters []string) ([]string, error) {
+func addServicePrincipalParameters(parameters *map[string]string) *map[string]string {
 	c, err := config.NewConfigContext()
 	if err != nil {
-		return nil, err
+		log.Fatalf("Can not create the ConfigContext: Double check the config path is correct. : %v \n", err)
 	}
 	conf, err := c.GetConfig()
 	if err != nil {
-		return nil, err
+		log.Fatalf("Can not create config file: Please check the ~/.strikes/conf file. :%v\n", err)
 	}
 
-	p := append(parameters, "-var", fmt.Sprintf("client_id='%s'", conf.ClientID))
-	p = append(p, "-var", fmt.Sprintf("client_secret='%s'", conf.ClientSecret))
-	p = append(p, "-var", fmt.Sprintf("subscription_id='%s'", conf.SubscriptionID))
-	p = append(p, "-var", fmt.Sprintf("tenant_id='%s'", conf.TenantID))
-
-	return p, nil
+	(*parameters)["client_id"] = conf.ClientID
+	(*parameters)["client_secret"] = conf.ClientSecret
+	(*parameters)["subscription_id"] = conf.SubscriptionID
+	(*parameters)["tenant_id"] = conf.TenantID
+	return parameters
 }

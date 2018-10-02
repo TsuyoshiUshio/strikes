@@ -1,7 +1,6 @@
 package providers
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -90,39 +89,62 @@ func TestGetTerraformParameter(t *testing.T) {
 	assert.Equal(t, "-var 'hoge=fuga'", (*results)[1])
 }
 
-func TestAddServicePrincipalParameters(t *testing.T) {
+type ServicePrincipalFixture struct {
+	ExpectedClientID          string
+	ExpectedClientSecret      string
+	ExpectedSubscriptionID    string
+	ExpectedTenantID          string
+	ExpectedOriginalParameter string
+}
+
+func (s *ServicePrincipalFixture) Setup() {
 	fakeNewConfigContext := func() (*config.ConfigContext, error) {
 		return &config.ConfigContext{}, nil
 	}
-	ExpectedClientID := "foo"
-	ExpectedClientSecret := "bar"
-	ExpectedSubscriptionID := "baz"
-	ExpectedTenantID := "qux"
 
 	fakeGetConfig := func(context *config.ConfigContext) (*config.Config, error) {
 		return &config.Config{
-			ClientID:       ExpectedClientID,
-			ClientSecret:   ExpectedClientSecret,
-			SubscriptionID: ExpectedSubscriptionID,
-			TenantID:       ExpectedTenantID,
+			ClientID:       s.ExpectedClientID,
+			ClientSecret:   s.ExpectedClientSecret,
+			SubscriptionID: s.ExpectedSubscriptionID,
+			TenantID:       s.ExpectedTenantID,
 		}, nil
 	}
+
+	s.Patch(fakeNewConfigContext, fakeGetConfig)
+}
+
+func (s *ServicePrincipalFixture) Patch(
+	fakeNewConfigContext func() (*config.ConfigContext, error),
+	fakeGetConfig func(context *config.ConfigContext) (*config.Config, error),
+) {
 	monkey.Patch(config.NewConfigContext, fakeNewConfigContext)
 	var conf *config.ConfigContext
 	monkey.PatchInstanceMethod(reflect.TypeOf(conf), "GetConfig", fakeGetConfig)
-	defer monkey.UnpatchAll()
-	param := []string{
-		"-var", "foo='bar'",
+}
+
+func TestAddServicePrincipalParameters(t *testing.T) {
+	fixture := &ServicePrincipalFixture{
+		ExpectedClientID:          "foo",
+		ExpectedClientSecret:      "bar",
+		ExpectedSubscriptionID:    "baz",
+		ExpectedTenantID:          "qux",
+		ExpectedOriginalParameter: "quux",
 	}
-	result, err := addServicePrincipalParameters(param)
-	assert.Nil(t, err, "Error should be nil")
-	assert.Equal(t, "-var", result[2])
-	assert.Equal(t, fmt.Sprintf("client_id='%s'", ExpectedClientID), result[3], "ClientID is wrong.")
-	assert.Equal(t, "-var", result[4])
-	assert.Equal(t, fmt.Sprintf("client_secret='%s'", ExpectedClientSecret), result[5], "ClientSecret is wrong.")
-	assert.Equal(t, "-var", result[6])
-	assert.Equal(t, fmt.Sprintf("subscription_id='%s'", ExpectedSubscriptionID), result[7], "SubscriptionID is wrong.")
-	assert.Equal(t, "-var", result[8])
-	assert.Equal(t, fmt.Sprintf("tenant_id='%s'", ExpectedTenantID), result[9], "TenantID is wrong.")
+	fixture.Setup()
+
+	defer monkey.UnpatchAll()
+	m := make(map[string]string)
+	m["foo"] = fixture.ExpectedOriginalParameter
+	result := addServicePrincipalParameters(&m)
+
+	assert.Equal(t, fixture.ExpectedOriginalParameter, (*result)["foo"], "Original Parameter is wrong.")
+	assert.Equal(t, fixture.ExpectedClientID, (*result)["client_id"], "ClientID is wrong.")
+	assert.Equal(t, fixture.ExpectedClientSecret, (*result)["client_secret"], "ClientSecret is wrong.")
+	assert.Equal(t, fixture.ExpectedSubscriptionID, (*result)["subscription_id"], "SubscriptionID is wrong.")
+	assert.Equal(t, fixture.ExpectedTenantID, (*result)["tenant_id"], "TenantID is wrong.")
+}
+
+func TestAddServicePricipalParametersWithoutContext(t *testing.T) {
 
 }
