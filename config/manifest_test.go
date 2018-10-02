@@ -12,7 +12,10 @@ import (
 )
 
 func TestReadManifest(t *testing.T) {
-	manifest, _ := NewManifestFromFile("./test-fixture/manifest-basic/manifest.yaml")
+	manifest, err := NewManifestFromFile("./test-fixture/manifest-basic/manifest.yaml")
+	if err != nil {
+		panic(err)
+	}
 	assert.Equal(t, "bar", manifest.Name)
 	assert.Equal(t, "Explanation of bar", manifest.Description)
 	assert.Equal(t, "Foo Bar", manifest.Author)

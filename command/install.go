@@ -1,6 +1,7 @@
 package command
 
 import (
+	"fmt"
 	"log"
 	"path/filepath"
 
@@ -24,15 +25,17 @@ func (s *InstallCommand) Install(c *cli.Context) error {
 	// Get the instance name from the parameter
 	instanceName := c.Args().Get(1)
 
+	fmt.Printf("packageName: %s\n instanceName: %s\n", packageName, instanceName)
+
 	// Get Metadata from Backend API
 	p, err := repository.GetPackage(packageName)
 	if err != nil {
-		log.Fatalf("Can not load the package name: %v\n", err)
-		return err
+		log.Printf("[DEBUG] GetPackage Error: %v,\n", err)
+		log.Fatalf("Can not find package: %s \n", packageName)
 	}
 
 	setUpStrikesTemp()
-	// Download Circuit
+	// Download Circuits
 	zipFilePath := filepath.Join(STRIKES_TEMP, "circuit.zip")
 	targetDirPath := filepath.Join(STRIKES_TEMP, "circuit")
 	err = helpers.DownloadFile(zipFilePath, p.GetCircuitZipURL())
@@ -41,8 +44,13 @@ func (s *InstallCommand) Install(c *cli.Context) error {
 		return err
 	}
 
-	helpers.UnZip(zipFilePath, targetDirPath)
-	manifest, err := config.NewManifestFromFile(targetDirPath) // TODO after developing Provider, _ should be
+	err = helpers.UnZip(zipFilePath, STRIKES_TEMP)
+	if err != nil {
+		log.Printf("[DEBUG] Extract Zip Error.: %v\n", err)
+		log.Fatalf("Can not extract the Zip file.: %v\n", zipFilePath)
+	}
+	manifestFilePath := filepath.Join(targetDirPath, "manifest.yaml")
+	manifest, err := config.NewManifestFromFile(manifestFilePath) // TODO after developing Provider, _ should be
 	if err != nil {
 		log.Fatalf("Can not read manifest file from the download contents. :%v\n", err)
 		return err

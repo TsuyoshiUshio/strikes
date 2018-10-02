@@ -17,8 +17,9 @@ type PushCommand struct {
 
 func (p *PushCommand) Push(c *cli.Context) error {
 
-	packageDirBase := c.String("p")
-
+	packageDirBasePath := c.String("p")
+	packageDirBase, _ := filepath.Abs(packageDirBasePath)
+	log.Printf("[DEBUG] packageDirBase: %s\n", packageDirBase)
 	// Load manifest file
 	manifest, err := loadManifestFile(packageDirBase)
 
@@ -30,6 +31,8 @@ func (p *PushCommand) Push(c *cli.Context) error {
 	// Compress source dir to zip file.
 	zipFilePath := filepath.Join(tempPath, "circuit.zip")
 	sourceDir := filepath.Join(packageDirBase, "circuit")
+	log.Printf("[DEUBG] zipFilePath: %s\nsourceDir: %s\n", zipFilePath, sourceDir)
+
 	helpers.Zip(sourceDir, zipFilePath)
 
 	// Get AccessToken from BackendAPI

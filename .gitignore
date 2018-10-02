@@ -6,3 +6,7 @@ coverage.txt
 coverage.xml
 coverage.json
 coverage.html
+
+.DS_Store
+
+.strikesTemp

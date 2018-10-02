@@ -30,6 +30,7 @@ func NewManifestFromFile(path string) (*Manifest, error) {
 		return nil, err
 	}
 	manifest := Manifest{}
+	log.Printf("[DEBUG] Read manifest: %s\n", string(d))
 	err = yaml.Unmarshal(d, &manifest)
 	if err != nil {
 		log.Fatalf("Cannot unmarshall the Manifest file: %v\n", err)

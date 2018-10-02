@@ -70,3 +70,7 @@
   branch = "master"
   name = "github.com/MakeNowJust/heredoc"
 
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/stretchr/stew"

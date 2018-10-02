@@ -195,7 +195,7 @@ func convertParameterMapToStringArray(values *map[string]string) *[]string {
 	for _, k := range *keys {
 		parameters[index] = "-var"
 		index++
-		parameters[index] = fmt.Sprintf("'%s=%s'", k, (*values)[k])
+		parameters[index] = fmt.Sprintf("%s=%s", k, (*values)[k])
 		index++
 	}
 	return &parameters

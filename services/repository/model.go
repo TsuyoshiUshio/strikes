@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	RepositoryBaseURL = "https://repository.simplearchitect.club/api/"
-	AssetBaseURL      = "https://asset.simplearchitect.club/"
+	RepositoryBaseURL = "https://strikesbackapp.azurewebsites.net/api/"                 // TODO : go back to the simplearchitect.club after DNS works.
+	AssetBaseURL      = "https://strikesrepoe9eej5x3.blob.core.windows.net/repository/" // TODO : go back to the simplearchitect.club after DNS works.
 )
 
 type RepositoryAccessToken struct {
@@ -23,6 +23,25 @@ type RepositoryAccessToken struct {
 }
 
 type Package struct {
+	Id          string     `json:"id"`
+	Name        string     `json:"name"`
+	Description string     `json:"description"`
+	Author      string     `json:"author"`
+	ProjectPage string     `json:"projectPage"`
+	ProjectRepo string     `json:"projectRepo"`
+	CreatedTime time.Time  `json:"createdTime"`
+	Releases    *[]Release `json:"releases"`
+	IsDeleted   bool
+}
+
+type Release struct {
+	Version      string    `json:"version"`
+	ReleaseNote  string    `json:"releaseNote"`
+	ProviderType string    `json:"providerType"`
+	CreatedTime  time.Time `json:"createdTime"`
+}
+
+type SearchPackage struct {
 	Id          string `json:"id"`
 	Name        string
 	Description string
@@ -30,15 +49,9 @@ type Package struct {
 	ProjectPage string
 	ProjectRepo string
 	CreatedTime time.Time
-	Releases    *[]Release
-	IsDeleted   bool
-}
-
-type Release struct {
-	Version      string
-	ReleaseNote  string
-	ProviderType string
-	CreatedTime  time.Time
+	Releases    string
+	// Column for Azure Search soft delete
+	IsDeleted bool
 }
 
 func NewPackageWithCurrentTime(
@@ -67,7 +80,15 @@ func NewPackageWithCurrentTime(
 	}
 }
 func NewPackageFromJson(jsonBytes []byte) (*Package, error) {
+	var p = string(jsonBytes)
+	log.Printf("[DEBUG] Unmarshall Package from response: %s\n", p)
 	var result Package
+	err := json.Unmarshal(jsonBytes, &result)
+	return &result, err
+}
+
+func NewSearchPackageFromJson(jsonBytes []byte) (*[]SearchPackage, error) {
+	var result []SearchPackage
 	err := json.Unmarshal(jsonBytes, &result)
 	return &result, err
 }

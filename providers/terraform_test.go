@@ -113,12 +113,12 @@ func TestGetTerraformParameter(t *testing.T) {
 	}
 	values := Filter(*results, f)
 
-	assert.True(t, slice.Contains(values, fmt.Sprintf("'client_id=%s'", fixture.ExpectedClientID)))
-	assert.True(t, slice.Contains(values, fmt.Sprintf("'client_secret=%s'", fixture.ExpectedClientSecret)))
-	assert.True(t, slice.Contains(values, fmt.Sprintf("'subscription_id=%s'", fixture.ExpectedSubscriptionID)))
-	assert.True(t, slice.Contains(values, fmt.Sprintf("'tenant_id=%s'", fixture.ExpectedTenantID)))
-	assert.True(t, slice.Contains(values, "'foo=bar'"))
-	assert.True(t, slice.Contains(values, "'hoge=fuga'"))
+	assert.True(t, slice.Contains(values, fmt.Sprintf("client_id=%s", fixture.ExpectedClientID)))
+	assert.True(t, slice.Contains(values, fmt.Sprintf("client_secret=%s", fixture.ExpectedClientSecret)))
+	assert.True(t, slice.Contains(values, fmt.Sprintf("subscription_id=%s", fixture.ExpectedSubscriptionID)))
+	assert.True(t, slice.Contains(values, fmt.Sprintf("tenant_id=%s", fixture.ExpectedTenantID)))
+	assert.True(t, slice.Contains(values, "foo=bar"))
+	assert.True(t, slice.Contains(values, "hoge=fuga"))
 }
 
 func Filter(params []string, f func(s string) bool) []string {

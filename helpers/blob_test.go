@@ -32,7 +32,7 @@ func TestNewBlockBlobWithSASQueryParameter(t *testing.T) {
 	ExpectedStorageAccountName := "foo"
 	ExpectedContainerName := "bar"
 	ExpectedBlobName := "baz"
-	ExpectedSASQueryParameter := "code=qux"
+	ExpectedSASQueryParameter := "?code=qux"
 	blockBlob := NewBlockBlobWithSASQueryParameter(ExpectedStorageAccountName, ExpectedContainerName, ExpectedBlobName, ExpectedSASQueryParameter)
 	assert.Equal(t, ExpectedBlockBlobURL, blockBlob.BlockBlobURL.String())
 	assert.Equal(t, ExpectedStorageAccountName, blockBlob.StorageAccountName)

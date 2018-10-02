@@ -132,6 +132,12 @@
   version = "v1.2.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/stretchr/stew"
+  packages = ["slice"]
+  revision = "80ef0842b48b329a6120607c817a85aff5a2ec71"
+
+[[projects]]
   name = "github.com/stretchr/testify"
   packages = ["assert"]
   revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
@@ -173,6 +179,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7f4bde0bbbb0691df738bd4ed8803f99af74bd4d232ef1627e550c09a4ccdccb"
+  inputs-digest = "4d8e60f3ced98cefa80af039c3c6fb54c64994efe9d2c12698de2595311580c3"
   solver-name = "gps-cdcl"
   solver-version = 1

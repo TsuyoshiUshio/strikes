@@ -72,7 +72,7 @@ func (b *BlockBlob) upload(readSeeker io.ReadSeeker) error {
 }
 
 func createBlockBlobURLWithSasQueryParameter(storageAccountName, containerName, blobName, sasQueryParameter string) *azblob.BlockBlobURL {
-	u, _ := url.Parse(fmt.Sprintf("https://%s.blob.core.windows.net/%s/%s?%s", storageAccountName, containerName, blobName, sasQueryParameter))
+	u, _ := url.Parse(fmt.Sprintf("https://%s.blob.core.windows.net/%s/%s%s", storageAccountName, containerName, blobName, sasQueryParameter))
 	blobURL := azblob.NewBlockBlobURL(*u,
 		azblob.NewPipeline(azblob.NewAnonymousCredential(), azblob.PipelineOptions{}))
 	return &blobURL

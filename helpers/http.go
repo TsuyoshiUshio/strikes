@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"io"
+	"log"
 	"net/http"
 	"os"
 )
@@ -17,6 +18,7 @@ func DownloadFile(filepath string, url string) error {
 	}
 	defer out.Close()
 
+	log.Printf("[DEBUG] Donwloading... FilePath: %s URL: %s\n", filepath, url)
 	resp, err := http.Get(url)
 	if err != nil {
 		return err
