@@ -1,13 +1,20 @@
 package providers
 
 import (
+	"bytes"
+	"errors"
+	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/TsuyoshiUshio/strikes/config"
 	"github.com/bouk/monkey"
+	"github.com/stretchr/stew/slice"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -80,13 +87,48 @@ func TestConfigureValues(t *testing.T) {
 }
 
 func TestGetTerraformParameter(t *testing.T) {
+	fixture := &ServicePrincipalFixture{
+		ExpectedClientID:          "foo",
+		ExpectedClientSecret:      "bar",
+		ExpectedSubscriptionID:    "baz",
+		ExpectedTenantID:          "qux",
+		ExpectedOriginalParameter: "quux",
+	}
+	fixture.Setup()
+
+	defer monkey.UnpatchAll()
 	// -var 'foo=bar' is the terraform parameters.
 	m := make(map[string]string)
 	m["foo"] = "bar"
 	m["hoge"] = "fuga"
 	results := getTerraformParameter(&m)
-	assert.Equal(t, "-var 'foo=bar'", (*results)[0])
-	assert.Equal(t, "-var 'hoge=fuga'", (*results)[1])
+	for i := 0; i < len(*results); i = i + 2 {
+		assert.Equal(t, "-var", (*results)[i])
+	}
+	f := func(s string) bool {
+		if strings.Contains(s, "=") {
+			return true
+		}
+		return false
+	}
+	values := Filter(*results, f)
+
+	assert.True(t, slice.Contains(values, fmt.Sprintf("'client_id=%s'", fixture.ExpectedClientID)))
+	assert.True(t, slice.Contains(values, fmt.Sprintf("'client_secret=%s'", fixture.ExpectedClientSecret)))
+	assert.True(t, slice.Contains(values, fmt.Sprintf("'subscription_id=%s'", fixture.ExpectedSubscriptionID)))
+	assert.True(t, slice.Contains(values, fmt.Sprintf("'tenant_id=%s'", fixture.ExpectedTenantID)))
+	assert.True(t, slice.Contains(values, "'foo=bar'"))
+	assert.True(t, slice.Contains(values, "'hoge=fuga'"))
+}
+
+func Filter(params []string, f func(s string) bool) []string {
+	result := make([]string, 0)
+	for _, p := range params {
+		if f(p) {
+			result = append(result, p)
+		}
+	}
+	return result
 }
 
 type ServicePrincipalFixture struct {
@@ -95,6 +137,8 @@ type ServicePrincipalFixture struct {
 	ExpectedSubscriptionID    string
 	ExpectedTenantID          string
 	ExpectedOriginalParameter string
+	ExpectedError             string
+	ActualOutputBuffer        *bytes.Buffer
 }
 
 func (s *ServicePrincipalFixture) Setup() {
@@ -114,6 +158,48 @@ func (s *ServicePrincipalFixture) Setup() {
 	s.Patch(fakeNewConfigContext, fakeGetConfig)
 }
 
+func (s *ServicePrincipalFixture) SetupWihtoutContext() {
+	fakeNewConfigContext := func() (*config.ConfigContext, error) {
+		return &config.ConfigContext{}, errors.New(s.ExpectedError)
+	}
+
+	fakeGetConfig := func(context *config.ConfigContext) (*config.Config, error) {
+		return &config.Config{
+			ClientID:       s.ExpectedClientID,
+			ClientSecret:   s.ExpectedClientSecret,
+			SubscriptionID: s.ExpectedSubscriptionID,
+			TenantID:       s.ExpectedTenantID,
+		}, nil
+	}
+	s.PatchWithOutput(fakeNewConfigContext, fakeGetConfig)
+}
+
+func (s *ServicePrincipalFixture) SetupWihtoutConfig() {
+	fakeNewConfigContext := func() (*config.ConfigContext, error) {
+		return &config.ConfigContext{}, nil
+	}
+
+	fakeGetConfig := func(context *config.ConfigContext) (*config.Config, error) {
+		return nil, errors.New(s.ExpectedError)
+	}
+	s.PatchWithOutput(fakeNewConfigContext, fakeGetConfig)
+}
+
+func (s *ServicePrincipalFixture) PatchWithOutput(
+	fakeNewConfigContext func() (*config.ConfigContext, error),
+	fakeGetConfig func(context *config.ConfigContext) (*config.Config, error),
+) {
+	fakeExit := func(code int) {
+		// ignore.
+	}
+	s.ActualOutputBuffer = new(bytes.Buffer)
+
+	log.SetOutput(s.ActualOutputBuffer)
+	monkey.Patch(os.Exit, fakeExit)
+
+	s.Patch(fakeNewConfigContext, fakeGetConfig)
+}
+
 func (s *ServicePrincipalFixture) Patch(
 	fakeNewConfigContext func() (*config.ConfigContext, error),
 	fakeGetConfig func(context *config.ConfigContext) (*config.Config, error),
@@ -121,6 +207,14 @@ func (s *ServicePrincipalFixture) Patch(
 	monkey.Patch(config.NewConfigContext, fakeNewConfigContext)
 	var conf *config.ConfigContext
 	monkey.PatchInstanceMethod(reflect.TypeOf(conf), "GetConfig", fakeGetConfig)
+}
+func (s *ServicePrincipalFixture) Output() string {
+	output, err := ioutil.ReadAll(s.ActualOutputBuffer)
+	if err != nil {
+		log.Printf("[DEBUG] %v, \n", err)
+		return "" // panic doesn't work for the moneky patching.
+	}
+	return string(output)
 }
 
 func TestAddServicePrincipalParameters(t *testing.T) {
@@ -146,5 +240,37 @@ func TestAddServicePrincipalParameters(t *testing.T) {
 }
 
 func TestAddServicePricipalParametersWithoutContext(t *testing.T) {
+	fixture := &ServicePrincipalFixture{
+		ExpectedClientID:          "foo",
+		ExpectedClientSecret:      "bar",
+		ExpectedSubscriptionID:    "baz",
+		ExpectedTenantID:          "qux",
+		ExpectedOriginalParameter: "quux",
+		ExpectedError:             "corge",
+	}
+	fixture.SetupWihtoutContext()
 
+	defer monkey.UnpatchAll()
+	m := make(map[string]string)
+	m["foo"] = fixture.ExpectedOriginalParameter
+	_ = addServicePrincipalParameters(&m)
+	assert.Regexp(t, fixture.ExpectedError, string(fixture.Output()))
+}
+
+func TestAddServicePricipalParametersWithoutConfig(t *testing.T) {
+	fixture := &ServicePrincipalFixture{
+		ExpectedClientID:          "foo",
+		ExpectedClientSecret:      "bar",
+		ExpectedSubscriptionID:    "baz",
+		ExpectedTenantID:          "qux",
+		ExpectedOriginalParameter: "quux",
+		ExpectedError:             "corge",
+	}
+	fixture.SetupWihtoutConfig()
+
+	defer monkey.UnpatchAll()
+	m := make(map[string]string)
+	m["foo"] = fixture.ExpectedOriginalParameter
+	_ = addServicePrincipalParameters(&m)
+	assert.Regexp(t, fixture.ExpectedError, string(fixture.Output()))
 }

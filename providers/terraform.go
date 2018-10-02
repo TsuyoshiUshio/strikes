@@ -190,9 +190,13 @@ func getMapKeys(m *map[string]string) *[]string {
 
 func convertParameterMapToStringArray(values *map[string]string) *[]string {
 	keys := getMapKeys(values)
-	parameters := make([]string, len(*keys), len(*keys))
-	for i, k := range *keys {
-		parameters[i] = fmt.Sprintf("-var '%s=%s'", k, (*values)[k])
+	parameters := make([]string, len(*keys)*2, len(*keys)*2)
+	index := 0
+	for _, k := range *keys {
+		parameters[index] = "-var"
+		index++
+		parameters[index] = fmt.Sprintf("'%s=%s'", k, (*values)[k])
+		index++
 	}
 	return &parameters
 }
@@ -222,10 +226,12 @@ func addServicePrincipalParameters(parameters *map[string]string) *map[string]st
 	c, err := config.NewConfigContext()
 	if err != nil {
 		log.Fatalf("Can not create the ConfigContext: Double check the config path is correct. : %v \n", err)
+		return nil
 	}
 	conf, err := c.GetConfig()
 	if err != nil {
 		log.Fatalf("Can not create config file: Please check the ~/.strikes/conf file. :%v\n", err)
+		return nil
 	}
 
 	(*parameters)["client_id"] = conf.ClientID
