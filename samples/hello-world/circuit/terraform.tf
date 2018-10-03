@@ -22,7 +22,7 @@ variable "environment_base_name" {
 # Repository Settings
 
 variable "repository_base_uri" {
-    default = "https://asset.simplearchitect.club/"
+    default = "https://strikesrepoe9eej5x3.blob.core.windows.net/repository/"
 }
 
 # Pacakge settings
@@ -111,9 +111,9 @@ resource "azurerm_function_app" "test" {
 
   app_settings {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.test.instrumentation_key}"
-    "FUNCTIONS_EXTENSION_VERSION" = "beta"
+    "FUNCTIONS_EXTENSION_VERSION" = "~1"
     "FUNCTIONS_WORKER_RUNTIME" = "${var.language}"
     # This going to change into WEBSITE_RUN_FROM_PACKAGE
-    "WEBSITE_RUN_FROM_ZIP" = "${var.repository_base_uri}${var.package_name}/${var.package_zip_name}/${var.package_zip_name}"
+    "WEBSITE_RUN_FROM_PACKAGE" = "${var.repository_base_uri}${var.package_name}/${var.package_version}/package/${var.package_zip_name}"
   }
 }

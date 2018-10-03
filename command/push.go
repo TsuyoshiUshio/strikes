@@ -2,9 +2,11 @@ package command
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/TsuyoshiUshio/strikes/config"
 	"github.com/TsuyoshiUshio/strikes/helpers"
@@ -43,7 +45,7 @@ func (p *PushCommand) Push(c *cli.Context) error {
 
 	createCircuitBlockBlob(token, manifest, zipFilePath)
 
-	createPackageBlockBlob(token, manifest, packageDirBase, zipFilePath)
+	createPackageBlockBlob(token, manifest, packageDirBase)
 
 	cretePackageToBackendAPI(manifest)
 
@@ -89,17 +91,42 @@ func getCircuitBlobName(manifest *config.Manifest) string {
 	return manifest.Name + "/" + manifest.Version + "/circuit/" + "circuit.zip"
 }
 
-func createPackageBlockBlob(token *repository.RepositoryAccessToken, manifest *config.Manifest, packageDirBase string, zipFilePath string) {
-	packageBlobName := getPackageBlobName(manifest)
+func createPackageBlockBlob(token *repository.RepositoryAccessToken, manifest *config.Manifest, packageDirBase string) {
 
-	// TODO the zip file name could be change. You need to search the directory and iterate the upload.
-	packageFilePath := filepath.Join(packageDirBase, "package", "hello.zip")
-	packageBlockBlobURL := helpers.NewBlockBlobWithSASQueryParameter(token.StorageAccountName, token.ContainerName, packageBlobName, token.SASQueryParameter)
-	packageBlockBlobURL.Upload(packageFilePath)
+	packageDirPath := filepath.Join(packageDirBase, "pacakge")
+	files, err := ioutil.ReadDir(packageDirPath)
+	if err != nil {
+		log.Fatalf("Can not read zip file for the target directory: %v\n", err)
+	}
+	fileNames := mapFileInfo(files, func(file os.FileInfo) string {
+		return file.Name()
+	})
+	zipFileNames := helpers.Filter(fileNames, func(s string) bool {
+		if strings.HasSuffix(s, ".zip") {
+			return true
+		} else {
+			return false
+		}
+	})
+
+	for _, zipFileName := range zipFileNames {
+		packageBlobName := getPackageBlobName(manifest, zipFileName)
+		packageFilePath := filepath.Join(packageDirBase, "package", zipFileName)
+		packageBlockBlobURL := helpers.NewBlockBlobWithSASQueryParameter(token.StorageAccountName, token.ContainerName, packageBlobName, token.SASQueryParameter)
+		packageBlockBlobURL.Upload(packageFilePath)
+	}
 }
 
-func getPackageBlobName(manifest *config.Manifest) string {
-	return manifest.Name + "/" + manifest.Version + "/package/" + "package.zip"
+func mapFileInfo(files []os.FileInfo, f func(file os.FileInfo) string) []string {
+	result := make([]string, len(files))
+	for _, file := range files {
+		result = append(result, f(file))
+	}
+	return result
+}
+
+func getPackageBlobName(manifest *config.Manifest, zipFileName string) string {
+	return manifest.Name + "/" + manifest.Version + "/package/" + zipFileName
 }
 
 func cretePackageToBackendAPI(manifest *config.Manifest) {
