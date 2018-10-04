@@ -13,3 +13,5 @@ providerType: Terraform
 releaseNote: Initial implementation for the first G.A. 
 visibility: public
 startScript: terraform.tf
+zipFileNames:
+- hello.zip

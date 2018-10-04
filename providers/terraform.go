@@ -72,13 +72,16 @@ func (t *TerraformProvider) CreateResource(args []string) *DeploymentResult {
 	// translate parameter fit for terraformf parameters
 	argsParameters, configrations := t.composeTerraformParameter(args)
 	// then append terraform options.
-	optionalParameters := []string{}
+	optionalParameters := []string{
+		"-input=false",
+		"-auto-approve",
+	}
 
 	// Execute terraform plan
 
-	fmt.Println("Executing terraform plan ...")
+	//	fmt.Println("Executing terraform plan ...")
 
-	t.executeTerraformCommand("plan", *argsParameters, optionalParameters, false)
+	//	t.executeTerraformCommand("plan", *argsParameters, optionalParameters, false)
 
 	// Execute terraform apply
 
@@ -211,8 +214,12 @@ func (t *TerraformProvider) composeTerraformParameter(args []string) (*[]string,
 	if err != nil {
 		log.Fatalf("Can not find values.hcl on the target path %v\n", t.TargetDir)
 	}
+
+	// Adding manifest parameters
+	manifestAddedValues := t.addManifestParameters(defaultValues)
+
 	// If there are parameters which is the same as the Values.hcl, override it.
-	parameterValues, err := configureValues(defaultValues, args)
+	parameterValues, err := configureValues(manifestAddedValues, args)
 	if err != nil {
 		log.Fatalf("Can not merge manifest values and parameter values. double check the arguments. ManifestValues: %v, Args: %v\n", defaultValues, args)
 	}
@@ -238,5 +245,20 @@ func addServicePrincipalParameters(parameters *map[string]string) *map[string]st
 	(*parameters)["client_secret"] = conf.ClientSecret
 	(*parameters)["subscription_id"] = conf.SubscriptionID
 	(*parameters)["tenant_id"] = conf.TenantID
+	return parameters
+}
+
+const (
+	PackageName        = "package_name"
+	PackageVersion     = "package_version"
+	PackageZipNameBase = "package_zip_name"
+)
+
+func (t *TerraformProvider) addManifestParameters(parameters *map[string]string) *map[string]string {
+	(*parameters)["package_name"] = t.Manifest.Name
+	(*parameters)["package_version"] = t.Manifest.Version
+	for i, name := range t.Manifest.ZipFileNames {
+		(*parameters)[fmt.Sprintf("%s_%d", PackageZipNameBase, i)] = name
+	}
 	return parameters
 }

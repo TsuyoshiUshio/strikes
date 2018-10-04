@@ -274,3 +274,32 @@ func TestAddServicePricipalParametersWithoutConfig(t *testing.T) {
 	_ = addServicePrincipalParameters(&m)
 	assert.Regexp(t, fixture.ExpectedError, string(fixture.Output()))
 }
+
+func TestAddManifestParameters(t *testing.T) {
+	ExpectedPackageName := "foo"
+	ExpectedPackageVersion := "1.0.0"
+	ExpectedPackageZipName01 := "bar.zip"
+	ExpectedPackageZipName02 := "baz.zip"
+	manifest := config.Manifest{
+		Name:    ExpectedPackageName,
+		Version: ExpectedPackageVersion,
+		ZipFileNames: []string{
+			ExpectedPackageZipName01,
+			ExpectedPackageZipName02,
+		},
+	}
+	provider := TerraformProvider{
+		Manifest: &manifest,
+	}
+
+	currentParams := make(map[string]string)
+	currentParams["foo"] = "bar"
+	currentParams["bar"] = "baz"
+	actual := provider.addManifestParameters(&currentParams)
+	assert.Equal(t, "bar", (*actual)["foo"])
+	assert.Equal(t, "baz", (*actual)["bar"])
+	assert.Equal(t, ExpectedPackageName, (*actual)[PackageName])
+	assert.Equal(t, ExpectedPackageVersion, (*actual)[PackageVersion])
+	assert.Equal(t, ExpectedPackageZipName01, (*actual)[fmt.Sprintf("%s_0", PackageZipNameBase)])
+	assert.Equal(t, ExpectedPackageZipName02, (*actual)[fmt.Sprintf("%s_1", PackageZipNameBase)])
+}

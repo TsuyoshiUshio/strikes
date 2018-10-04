@@ -37,7 +37,7 @@ variable "package_version" {
   # default = 1.0.0
 }
 
-variable "package_zip_name" {
+variable "package_zip_name_0" {
     # example
     # default = "hello.zip"
 }
@@ -63,17 +63,18 @@ resource "azurerm_resource_group" "test" {
 }
 
 resource "random_string" "suffix" {
-  length = 8
+  length = 4
   special = false
   upper = false
 }
 
 resource "azurerm_storage_account" "test" {
-  name                     = "${var.environment_base_name}sa${random_string.suffix.result}"
+  name                     = "${replace(var.environment_base_name,"-","")}sa${random_string.suffix.result}"
   resource_group_name      = "${azurerm_resource_group.test.name}"
   location                 = "${azurerm_resource_group.test.location}"
   account_tier             = "Standard"
   account_replication_type = "LRS"
+  depends_on = ["random_string.suffix"]
 }
 
 resource "azurerm_app_service_plan" "test" {
@@ -114,6 +115,8 @@ resource "azurerm_function_app" "test" {
     "FUNCTIONS_EXTENSION_VERSION" = "~1"
     "FUNCTIONS_WORKER_RUNTIME" = "${var.language}"
     # This going to change into WEBSITE_RUN_FROM_PACKAGE
-    "WEBSITE_RUN_FROM_PACKAGE" = "${var.repository_base_uri}${var.package_name}/${var.package_version}/package/${var.package_zip_name}"
+    "WEBSITE_RUN_FROM_PACKAGE" = "${var.repository_base_uri}${var.package_name}/${var.package_version}/package/${var.package_zip_name_0}"
   }
+
+  depends_on = ["azurerm_app_service_plan.test", "azurerm_resource_group.test", "azurerm_storage_account.test"] 
 }

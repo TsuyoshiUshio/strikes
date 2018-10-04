@@ -93,7 +93,7 @@ func getCircuitBlobName(manifest *config.Manifest) string {
 
 func createPackageBlockBlob(token *repository.RepositoryAccessToken, manifest *config.Manifest, packageDirBase string) {
 
-	packageDirPath := filepath.Join(packageDirBase, "pacakge")
+	packageDirPath := filepath.Join(packageDirBase, "package")
 	files, err := ioutil.ReadDir(packageDirPath)
 	if err != nil {
 		log.Fatalf("Can not read zip file for the target directory: %v\n", err)

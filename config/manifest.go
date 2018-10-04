@@ -16,11 +16,12 @@ type Manifest struct {
 	ProjectRepo string `yaml:"projectRepo" validate:"url"`
 
 	// Release
-	Version      string `yaml:"version"`
-	ProviderType string `yaml:"providerType" validate:"providerType"`
-	ReleaseNote  string `yaml:"releaseNote"`
-	Visibility   string `yaml:"visibility" validate:"visibility"`
-	StartScript  string `yaml:"startScript"`
+	Version      string   `yaml:"version"`
+	ProviderType string   `yaml:"providerType" validate:"providerType"`
+	ReleaseNote  string   `yaml:"releaseNote"`
+	Visibility   string   `yaml:"visibility" validate:"visibility"`
+	StartScript  string   `yaml:"startScript"`
+	ZipFileNames []string `yaml:"zipFileNames"`
 }
 
 func NewManifestFromFile(path string) (*Manifest, error) {
