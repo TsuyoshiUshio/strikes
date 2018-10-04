@@ -51,6 +51,12 @@ func main() {
 			Usage:   "Install Lightning Strikes Package.",
 			Action:  (&command.InstallCommand{}).Install,
 		},
+		{
+			Name:    "search",
+			Aliases: []string{"s"},
+			Usage:   "Search Lightning Strikes Package.",
+			Action:  (&command.SearchCommand{}).Search,
+		},
 	}
 	a := os.Args
 	app.Run(a)
