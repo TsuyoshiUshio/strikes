@@ -87,8 +87,8 @@ func NewPackageFromJson(jsonBytes []byte) (*Package, error) {
 	return &result, err
 }
 
-func NewSearchPackageFromJson(jsonBytes []byte) (*[]SearchPackage, error) {
-	var result []SearchPackage
+func NewSearchPackageFromJson(jsonBytes []byte) (*[]Package, error) {
+	var result []Package
 	err := json.Unmarshal(jsonBytes, &result)
 	return &result, err
 }

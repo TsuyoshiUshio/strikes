@@ -34,7 +34,7 @@ func GetRepositoryAccessToken() (*RepositoryAccessToken, error) {
 	return &token, nil
 }
 
-func GetPackages(packageName string) (*[]SearchPackage, error) {
+func GetPackages(packageName string) (*[]Package, error) {
 	resp, err := getRequest(RepositoryBaseURL+"packages?name="+packageName,
 		fmt.Sprintf("Can not get package name: %s\n", packageName),
 		fmt.Sprintf("Can not fetch the package: "+packageName))

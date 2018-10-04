@@ -19,7 +19,11 @@ func (p *SearchCommand) Search(c *cli.Context) error {
 		return nil
 	}
 	for _, p := range *packages {
-		fmt.Printf("%s\n", p.Name)
+		fmt.Printf("%s ", p.Name)
+		for _, r := range *(p.Releases) {
+			fmt.Printf("%s ", r.Version)
+		}
+		fmt.Println("")
 	}
 	return nil
 }
