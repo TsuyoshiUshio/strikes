@@ -38,6 +38,8 @@ func TestGetPowerPlantConfig(t *testing.T) {
 }
 
 func TestGetConfig(t *testing.T) {
+	ExpectedConfigDir := "foo"
+	ExpectedFileName := filepath.Join(ExpectedConfigDir, "config")
 	path := filepath.Join(".", "test-fixture", "config-basic", "config")
 	file, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -54,7 +56,7 @@ func TestGetConfig(t *testing.T) {
 		return "baz", nil
 	}
 	context := ConfigContext{
-		ConfigDir:                "foo",
+		ConfigDir:                ExpectedConfigDir,
 		PowerPlantConfigFilePath: "bar",
 		GetHomeDir:               getHomeDir,
 	}
@@ -66,4 +68,5 @@ func TestGetConfig(t *testing.T) {
 	assert.Equal(t, "bar", config.ClientSecret)
 	assert.Equal(t, "baz", config.SubscriptionID)
 	assert.Equal(t, "qux", config.TenantID)
+	assert.Equal(t, ExpectedFileName, ActualFileName)
 }
