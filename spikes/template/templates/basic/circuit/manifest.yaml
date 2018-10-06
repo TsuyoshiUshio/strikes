@@ -1,0 +1,17 @@
+# Strikes package manifest file
+
+name: {{.PackageName}}
+description: HelloWorld package for deploying simple C# functions with consumption plan function app.
+author: Tsuyoshi Ushio
+projectPage: https://github.com/TsuyoshiUshio/hello-world
+projectRepo: https://github.com/TsuyoshiUshio/hello-world
+
+# Release
+
+version: 1.0.0
+providerType: Terraform
+releaseNote: Initial implementation for the first G.A. 
+visibility: public
+startScript: terraform.tf
+zipFileNames:
+- hello.zip
