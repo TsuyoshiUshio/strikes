@@ -74,3 +74,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/stretchr/stew"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/shurcooL/vfsgen"

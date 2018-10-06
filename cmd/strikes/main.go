@@ -57,6 +57,12 @@ func main() {
 			Usage:   "Search Lightning Strikes Package.",
 			Action:  (&command.SearchCommand{}).Search,
 		},
+		{
+			Name:    "new",
+			Aliases: []string{"n"},
+			Usage:   "Generate circuit from a template.",
+			Action:  (&command.NewCommand{}).New,
+		},
 	}
 	a := os.Args
 	app.Run(a)

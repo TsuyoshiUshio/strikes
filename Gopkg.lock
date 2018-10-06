@@ -133,6 +133,18 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/shurcooL/httpfs"
+  packages = ["vfsutil"]
+  revision = "809beceb23714880abc4a382a00c05f89d13b1cc"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/shurcooL/vfsgen"
+  packages = ["."]
+  revision = "33ae1944be3fe078a54c597f107e0867da19c713"
+
+[[projects]]
+  branch = "master"
   name = "github.com/stretchr/stew"
   packages = ["slice"]
   revision = "80ef0842b48b329a6120607c817a85aff5a2ec71"
@@ -179,6 +191,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4d8e60f3ced98cefa80af039c3c6fb54c64994efe9d2c12698de2595311580c3"
+  inputs-digest = "62ca38825e1a1975596f96781c20b7f8ee94f5150ee42af1029c1b928e1baf19"
   solver-name = "gps-cdcl"
   solver-version = 1
