@@ -109,10 +109,10 @@ resource "azurerm_function_app" "test" {
   resource_group_name       = "${azurerm_resource_group.test.name}"
   app_service_plan_id       = "${azurerm_app_service_plan.test.id}"
   storage_connection_string = "${azurerm_storage_account.test.primary_connection_string}"
+  version = "~2"
 
   app_settings {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.test.instrumentation_key}"
-    "FUNCTIONS_EXTENSION_VERSION" = "~2"
     "FUNCTIONS_WORKER_RUNTIME" = "${var.language}"
     # This going to change into WEBSITE_RUN_FROM_PACKAGE
     "WEBSITE_RUN_FROM_PACKAGE" = "${var.repository_base_uri}${var.package_name}/${var.package_version}/package/${var.package_zip_name_0}"
