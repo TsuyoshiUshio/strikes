@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	// execute this code from the root directory of the strikes.
 	var fs http.FileSystem = http.Dir(filepath.Join("template", "templates"))
 	options := vfsgen.Options{
 		Filename:    filepath.Join("template", "assets", "assets.go"),

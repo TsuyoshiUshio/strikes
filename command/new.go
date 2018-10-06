@@ -31,5 +31,8 @@ func (s *NewCommand) New(c *cli.Context) error {
 	fmt.Printf("ProvierType: %s\n", providerType)
 	fmt.Printf("PackageName: %s\n", packageName)
 
+	// feature
+	// user specify the provider type then choose the number.
+
 	return nil
 }
