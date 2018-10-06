@@ -6,13 +6,13 @@ variable "tenant_id" {}
 
 # Resource Group
 variable "resource_group" {
-  default = "hello-world-rg"
+  default = "{{.PackageName}}-rg"
 }
 variable "location" {
   default = "japaneast"
 }
 variable "tag_name" {
-  default = "hello-world"
+  default = "{{.PackageName}}"
 }
 
 variable "environment_base_name" {

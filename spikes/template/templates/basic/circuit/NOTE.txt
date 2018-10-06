@@ -1,4 +1,4 @@
-Hello World package successfully deployed!
+{{.PackageName}} package successfully deployed!
 
 Please refer these resources: 
 
