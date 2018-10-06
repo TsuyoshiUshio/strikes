@@ -303,3 +303,55 @@ func TestAddManifestParameters(t *testing.T) {
 	assert.Equal(t, ExpectedPackageZipName01, (*actual)[fmt.Sprintf("%s_0", PackageZipNameBase)])
 	assert.Equal(t, ExpectedPackageZipName02, (*actual)[fmt.Sprintf("%s_1", PackageZipNameBase)])
 }
+
+func TestOverrideEnvironmentBaseNameAndResourceGroupIfSpecifiedNormalCase(t *testing.T) {
+	ExpectedExistsParameterFoo := "bar"
+	ExpectedExistsParameterBar := "baz"
+	ExpectedEnvironmentBaseName := "qux"
+	ExpectedResourceGroup := ExpectedEnvironmentBaseName + "-rg"
+	m := make(map[string]string)
+	m["foo"] = ExpectedExistsParameterFoo
+	m["bar"] = ExpectedExistsParameterBar
+	instanceName := ExpectedEnvironmentBaseName
+
+	Actual := overrideEnvironmentBaseNameAndResourceGroupIfSpecified(&m, instanceName)
+	assert.Equal(t, ExpectedExistsParameterFoo, (*Actual)["foo"])
+	assert.Equal(t, ExpectedExistsParameterBar, (*Actual)["bar"])
+	assert.Equal(t, ExpectedEnvironmentBaseName, (*Actual)["environment_base_name"])
+	assert.Equal(t, ExpectedResourceGroup, (*Actual)["resource_group"])
+}
+
+func TestOverrideEnvironmentBaseNameAndResourceGroupIfSpecifiedNotSpecifiedCase(t *testing.T) {
+	ExpectedExistsParameterFoo := "bar"
+	ExpectedExistsParameterBar := "baz"
+	m := make(map[string]string)
+	m["foo"] = ExpectedExistsParameterFoo
+	m["bar"] = ExpectedExistsParameterBar
+
+	Actual := overrideEnvironmentBaseNameAndResourceGroupIfSpecified(&m, "")
+	assert.Equal(t, ExpectedExistsParameterFoo, (*Actual)["foo"])
+	assert.Equal(t, ExpectedExistsParameterBar, (*Actual)["bar"])
+	_, IsActualEnvironmentBaseName := (*Actual)["environment_base_name"]
+	_, IsActualResourceGroup := (*Actual)["resource_group"]
+	assert.False(t, IsActualEnvironmentBaseName, "environment_base_name shold not be specified.")
+	assert.False(t, IsActualResourceGroup, "resource_group shold not be specified.")
+}
+
+func TestOverrideEnvironmentBaseNameAndResourceGroupIfSpecifiedNormalWithResourceGroup(t *testing.T) {
+	ExpectedExistsParameterFoo := "bar"
+	ExpectedExistsParameterBar := "baz"
+	ExpectedEnvironmentBaseName := "qux"
+	ExpectedResourceGroup := ExpectedEnvironmentBaseName + "-rg"
+	m := make(map[string]string)
+	m["environment_base_name"] = "quuz"
+	m["resource_group"] = "quuz-rg"
+	m["foo"] = ExpectedExistsParameterFoo
+	m["bar"] = ExpectedExistsParameterBar
+	instanceName := ExpectedEnvironmentBaseName
+
+	Actual := overrideEnvironmentBaseNameAndResourceGroupIfSpecified(&m, instanceName)
+	assert.Equal(t, ExpectedExistsParameterFoo, (*Actual)["foo"], "Expected")
+	assert.Equal(t, ExpectedExistsParameterBar, (*Actual)["bar"])
+	assert.Equal(t, ExpectedEnvironmentBaseName, (*Actual)["environment_base_name"])
+	assert.Equal(t, ExpectedResourceGroup, (*Actual)["resource_group"])
+}

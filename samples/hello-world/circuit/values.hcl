@@ -2,7 +2,7 @@ variable "environment_base_name" {
   default = "hello-world"
 }
 variable "resource_group" {
-  default = "hello-world-rg"
+  default = "hello-world-rg" // by default, resource_group is the environment_base_name + -rg
 }
 
 variable "location" {

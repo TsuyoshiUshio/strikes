@@ -58,7 +58,7 @@ func (s *InstallCommand) Install(c *cli.Context) error {
 
 	// Execute deployment using Provider.
 	provider := providers.NewTerraformProvider(manifest, targetDirPath) //targetDirPath is here or adding one deep directory
-	result := provider.CreateResource(c.Args().Tail())                  // The first one is the package name.
+	result := provider.CreateResource(c.Args().Tail(), instanceName)    // The first one is the package name.
 
 	// Update the PowerPlant
 	instance := storage.StrikesInstance{

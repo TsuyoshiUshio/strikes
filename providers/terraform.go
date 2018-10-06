@@ -18,7 +18,7 @@ import (
 )
 
 type Provider interface {
-	CreateResource(args []string)
+	CreateResource(args []string, instanceName string) *DeploymentResult
 }
 
 type TerraformProvider struct {
@@ -59,7 +59,7 @@ func (t *TerraformProvider) IsProviderCommandExists() bool {
 	return true
 }
 
-func (t *TerraformProvider) CreateResource(args []string) *DeploymentResult {
+func (t *TerraformProvider) CreateResource(args []string, instanceName string) *DeploymentResult {
 	if !t.IsProviderCommandExists() {
 		log.Fatalf("Can not find the terraform command on your path. Please check if it is on your Path environment variables")
 	}
@@ -70,7 +70,7 @@ func (t *TerraformProvider) CreateResource(args []string) *DeploymentResult {
 	t.executeTerraformCommand("init", []string{}, []string{}, false)
 
 	// translate parameter fit for terraformf parameters
-	argsParameters, configrations := t.composeTerraformParameter(args)
+	argsParameters, configrations := t.composeTerraformParameter(args, instanceName)
 	// then append terraform options.
 	optionalParameters := []string{
 		"-input=false",
@@ -209,14 +209,18 @@ func getTerraformParameter(values *map[string]string) *[]string {
 	return convertParameterMapToStringArray(parameters)
 }
 
-func (t *TerraformProvider) composeTerraformParameter(args []string) (*[]string, *map[string]string) {
+func (t *TerraformProvider) composeTerraformParameter(args []string, instanceName string) (*[]string, *map[string]string) {
 	defaultValues, err := parseValuesHcl(filepath.Join(t.TargetDir, "values.hcl"))
 	if err != nil {
 		log.Fatalf("Can not find values.hcl on the target path %v\n", t.TargetDir)
 	}
 
+	// if the instance name specified, environment_base_name is set by the instance name
+	// and if the resource group name with {environment_base_name}-rg.
+	overridenValues := overrideEnvironmentBaseNameAndResourceGroupIfSpecified(defaultValues, instanceName)
+
 	// Adding manifest parameters
-	manifestAddedValues := t.addManifestParameters(defaultValues)
+	manifestAddedValues := t.addManifestParameters(overridenValues)
 
 	// If there are parameters which is the same as the Values.hcl, override it.
 	parameterValues, err := configureValues(manifestAddedValues, args)
@@ -254,11 +258,28 @@ const (
 	PackageZipNameBase = "package_zip_name"
 )
 
+const (
+	EnvironmentBaseNameParameter = "environment_base_name"
+	ResourceGroupParameter       = "resource_group"
+)
+
 func (t *TerraformProvider) addManifestParameters(parameters *map[string]string) *map[string]string {
 	(*parameters)["package_name"] = t.Manifest.Name
 	(*parameters)["package_version"] = t.Manifest.Version
 	for i, name := range t.Manifest.ZipFileNames {
 		(*parameters)[fmt.Sprintf("%s_%d", PackageZipNameBase, i)] = name
 	}
+	return parameters
+}
+
+func overrideEnvironmentBaseNameAndResourceGroupIfSpecified(parameters *map[string]string, instanceName string) *map[string]string {
+	if instanceName == "" {
+		return parameters
+	}
+
+	// These parameter is mandatory.
+	(*parameters)[EnvironmentBaseNameParameter] = instanceName
+	(*parameters)[ResourceGroupParameter] = instanceName + "-rg"
+
 	return parameters
 }
