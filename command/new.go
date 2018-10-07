@@ -35,6 +35,7 @@ func (s *NewCommand) New(c *cli.Context) error {
 	builder := ui.NewProcessBuilder()
 	builder.Append(ui.NewChooseTemplateProcess(providerType, os.Stdin))
 	builder.Append(ui.NewPackageNameProcess(os.Stdin))
+	builder.Append(ui.NewDescriptionProcess(os.Stdin))
 	process := builder.Build()
 	parameter := ui.PackageParameter{}
 	_, err := ui.Execute(process, parameter)

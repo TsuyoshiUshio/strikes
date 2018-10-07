@@ -36,7 +36,7 @@ func Execute(p *Process, parameter interface{}) (interface{}, error) {
 			return nil, err
 		}
 		if (*p).Next() != nil {
-			return Execute((*p).Next(), parameter)
+			return Execute((*p).Next(), result)
 		} else {
 			return result, nil
 		}
