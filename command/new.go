@@ -38,6 +38,7 @@ func (s *NewCommand) New(c *cli.Context) error {
 	builder.Append(ui.NewDescriptionProcess(os.Stdin))
 	builder.Append(ui.NewAuthorProcess(os.Stdin))
 	builder.Append(ui.NewProjectPageProcess(os.Stdin))
+	builder.Append(ui.NewProjectRepoProcess(os.Stdin))
 	process := builder.Build()
 	parameter := ui.PackageParameter{}
 	result, err := ui.Execute(process, parameter)
@@ -46,12 +47,13 @@ func (s *NewCommand) New(c *cli.Context) error {
 	}
 	param := result.(ui.PackageParameter)
 	fmt.Println("")
-	fmt.Printf("TemplateDir: %s\nPackageName: %s\nDescription: %s\nAuthor: %s\nProjectPage: %s\n",
+	fmt.Printf("TemplateDir: %s\nPackageName: %s\nDescription: %s\nAuthor: %s\nProjectPage: %s\nProjectRepo: %s\n",
 		param.TemplateDirPath,
 		param.PackageName,
 		param.Description,
 		param.Author,
 		param.ProjectPage,
+		param.ProjectRepo,
 	)
 	fmt.Println("")
 	return nil

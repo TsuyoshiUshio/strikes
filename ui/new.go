@@ -344,7 +344,7 @@ func (p *ProjectPageProcess) UpdateParameter(answer string, parameter interface{
 	return param, nil
 }
 func (p *ProjectPageProcess) ShowValidateError(answer string) {
-	fmt.Printf("Project Page should be valid URL. \n", answer)
+	fmt.Printf("Project Page should be valid URL. : %s \n", answer)
 	fmt.Println("")
 }
 func (p *ProjectPageProcess) SetNext(process *Process) {
@@ -361,6 +361,70 @@ func (p *ProjectPageProcess) SetParameter(parameter interface{}) {
 func NewProjectPageProcess(file *os.File) *Process {
 	var p Process
 	p = &ProjectPageProcess{
+		Stdin: file,
+	}
+	return &p
+}
+
+type ProjectRepoProcess struct {
+	Stdin       *os.File
+	NextProcess *Process
+	Parameter   PackageParameter
+}
+
+func (p *ProjectRepoProcess) PrintQuestion() error {
+	fmt.Print("Project Repository : [ default: https://github.com ] ")
+	return nil
+}
+func (p *ProjectRepoProcess) WaitForInput() (string, error) {
+	return readLine((*p).Stdin)
+}
+func (p *ProjectRepoProcess) Validate(answer string) bool {
+	// should be valid URL
+	err := validation.Validate(answer,
+		is.URL)
+	if err != nil {
+		return false
+	} else {
+		return true
+	}
+}
+func (p *ProjectRepoProcess) IsTargetParameterFilled(parameter interface{}) bool {
+	param := parameter.(PackageParameter)
+	if param.ProjectRepo != "" {
+		return true
+	}
+	return false
+}
+func (p *ProjectRepoProcess) UpdateParameter(answer string, parameter interface{}) (interface{}, error) {
+
+	param := parameter.(PackageParameter)
+	if answer == "" && param.ProjectRepo == "" {
+		answer = "https://github.com"
+	}
+	if param.ProjectRepo == "" {
+		param.ProjectRepo = answer
+	}
+	return param, nil
+}
+func (p *ProjectRepoProcess) ShowValidateError(answer string) {
+	fmt.Printf("Project Repository should be valid URL. : %s \n", answer)
+	fmt.Println("")
+}
+func (p *ProjectRepoProcess) SetNext(process *Process) {
+	p.NextProcess = process
+}
+func (p *ProjectRepoProcess) Next() *Process {
+	return p.NextProcess
+}
+
+func (p *ProjectRepoProcess) SetParameter(parameter interface{}) {
+	p.Parameter = parameter.(PackageParameter)
+}
+
+func NewProjectRepoProcess(file *os.File) *Process {
+	var p Process
+	p = &ProjectRepoProcess{
 		Stdin: file,
 	}
 	return &p
