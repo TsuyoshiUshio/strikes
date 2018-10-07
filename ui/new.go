@@ -124,7 +124,7 @@ type PackageNameProcess struct {
 }
 
 func (p *PackageNameProcess) PrintQuestion() error {
-	fmt.Print("Input PackageName: ")
+	fmt.Print("PackageName : ")
 	return nil
 }
 func (p *PackageNameProcess) WaitForInput() (string, error) {
@@ -188,7 +188,7 @@ type DescriptionProcess struct {
 }
 
 func (p *DescriptionProcess) PrintQuestion() error {
-	fmt.Printf("Input Description [default: %s package.]: ", p.Parameter.PackageName)
+	fmt.Printf("Description [default: %s package.]: ", p.Parameter.PackageName)
 	return nil
 }
 func (p *DescriptionProcess) WaitForInput() (string, error) {
@@ -237,6 +237,65 @@ func (p *DescriptionProcess) SetParameter(parameter interface{}) {
 func NewDescriptionProcess(file *os.File) *Process {
 	var p Process
 	p = &DescriptionProcess{
+		Stdin: file,
+	}
+	return &p
+}
+
+type AuthorProcess struct {
+	Stdin       *os.File
+	NextProcess *Process
+	Parameter   PackageParameter
+}
+
+func (p *AuthorProcess) PrintQuestion() error {
+	fmt.Printf("Author name : ")
+	return nil
+}
+func (p *AuthorProcess) WaitForInput() (string, error) {
+	return readLine((*p).Stdin)
+}
+func (p *AuthorProcess) Validate(answer string) bool {
+	// length is [3 - 64]
+	err := validation.Validate(answer,
+		validation.Required,
+		validation.Length(3, 64))
+	if err != nil {
+		return false
+	} else {
+		return true
+	}
+}
+func (p *AuthorProcess) IsTargetParameterFilled(parameter interface{}) bool {
+	param := parameter.(PackageParameter)
+	if param.Author != "" {
+		return true
+	}
+	return false
+}
+func (p *AuthorProcess) UpdateParameter(answer string, parameter interface{}) (interface{}, error) {
+	param := parameter.(PackageParameter)
+	param.Author = answer
+	return param, nil
+}
+func (p *AuthorProcess) ShowValidateError(answer string) {
+	fmt.Printf("Author length should be between 3 - 64. Empty is not allowed. \n", answer)
+	fmt.Println("")
+}
+func (p *AuthorProcess) SetNext(process *Process) {
+	p.NextProcess = process
+}
+func (p *AuthorProcess) Next() *Process {
+	return p.NextProcess
+}
+
+func (p *AuthorProcess) SetParameter(parameter interface{}) {
+	p.Parameter = parameter.(PackageParameter)
+}
+
+func NewAuthorProcess(file *os.File) *Process {
+	var p Process
+	p = &AuthorProcess{
 		Stdin: file,
 	}
 	return &p
