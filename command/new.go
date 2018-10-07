@@ -1,13 +1,10 @@
 package command
 
 import (
-	"bufio"
 	"fmt"
-	"log"
 	"os"
-	"strconv"
 
-	"github.com/TsuyoshiUshio/strikes/template/assets"
+	"github.com/TsuyoshiUshio/strikes/ui"
 	"github.com/urfave/cli"
 )
 
@@ -34,37 +31,15 @@ func (s *NewCommand) New(c *cli.Context) error {
 	fmt.Println("")
 	fmt.Println("Strikes Package Generator")
 	fmt.Println("")
-	packageList := assets.List(providerType)
-	for i, template := range packageList {
-		content, err := assets.ReadTemplateDescription("/" + providerType + "/" + template)
-		if err != nil {
-			log.Fatalf("Can not find Template Description for %s, error: %v\n", template, err)
-			return nil
-		}
-		fmt.Printf("%d: %s:%s %s\n", i, template, adjustTabs(template), content)
-	}
 
-	fmt.Println("")
-	fmt.Printf("Choose Template [0-%d]: ", len(packageList)-1)
-	reader := bufio.NewReader(os.Stdin)
-	line, prefix, err := reader.ReadLine()
-	i, err := strconv.Atoi(string(line))
+	builder := ui.NewProcessBuilder()
+	builder.Append(ui.NewChooseTemplateProcess(providerType, os.Stdin))
+	builder.Append(ui.NewPackageNameProcess(os.Stdin))
+	process := builder.Build()
+	parameter := ui.PackageParameter{}
+	_, err := ui.Execute(process, parameter)
 	if err != nil {
-		fmt.Printf("Select the proper value. %s is not accepted. \n", line)
-		return nil
+		return err
 	}
-	if i > (len(packageList) - 1) {
-		fmt.Printf("Select the proper value. %s is not accepted. \n", line)
-		return nil
-	}
-	fmt.Printf("You typed: %s : %s : %v : %v \n", string(line), packageList[i], prefix, err)
 	return nil
-}
-
-func adjustTabs(name string) string {
-	if len(name) > 11 {
-		return "\t"
-	} else {
-		return "\t\t"
-	}
 }

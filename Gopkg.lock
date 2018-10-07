@@ -47,6 +47,12 @@
   revision = "e9091a26100e9cfb2b6a8f470085bfa541931a91"
 
 [[projects]]
+  name = "github.com/asaskevich/govalidator"
+  packages = ["."]
+  revision = "ccb8e960c48f04d6935e72476ae4a51028f9e22f"
+  version = "v9"
+
+[[projects]]
   name = "github.com/bouk/monkey"
   packages = ["."]
   revision = "5df1f207ff77e025801505ae4d903133a0b4353f"
@@ -69,6 +75,15 @@
   packages = ["."]
   revision = "5448fe645cb1964ba70ac8f9f2ffe975e61a536c"
   version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/go-ozzo/ozzo-validation"
+  packages = [
+    ".",
+    "is"
+  ]
+  revision = "106681dbb37bfa3e7683c4c8129cb7f5925ea3e9"
+  version = "v3.5.0"
 
 [[projects]]
   name = "github.com/go-playground/locales"
@@ -191,6 +206,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "62ca38825e1a1975596f96781c20b7f8ee94f5150ee42af1029c1b928e1baf19"
+  inputs-digest = "ffa8f6bf52589fd64ab62c090e6f2ec7853a59221d907afc74a12ede4e04923c"
   solver-name = "gps-cdcl"
   solver-version = 1

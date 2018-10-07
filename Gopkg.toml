@@ -78,3 +78,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/shurcooL/vfsgen"
+
+[[constraint]]
+  name = "github.com/go-ozzo/ozzo-validation"
+  version = "3.5.0"
