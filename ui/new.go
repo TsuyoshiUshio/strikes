@@ -280,7 +280,7 @@ func (p *AuthorProcess) UpdateParameter(answer string, parameter interface{}) (i
 	return param, nil
 }
 func (p *AuthorProcess) ShowValidateError(answer string) {
-	fmt.Printf("Author length should be between 3 - 64. Empty is not allowed. \n", answer)
+	fmt.Printf("Author length should be between 3 - 64. Empty is not allowed.: %s \n", answer)
 	fmt.Println("")
 }
 func (p *AuthorProcess) SetNext(process *Process) {
@@ -425,6 +425,129 @@ func (p *ProjectRepoProcess) SetParameter(parameter interface{}) {
 func NewProjectRepoProcess(file *os.File) *Process {
 	var p Process
 	p = &ProjectRepoProcess{
+		Stdin: file,
+	}
+	return &p
+}
+
+type ReleaseNoteProcess struct {
+	Stdin       *os.File
+	NextProcess *Process
+	Parameter   PackageParameter
+}
+
+func (p *ReleaseNoteProcess) PrintQuestion() error {
+	fmt.Print("Release Note : [ default: Initial Release. ] ")
+	return nil
+}
+func (p *ReleaseNoteProcess) WaitForInput() (string, error) {
+	return readLine((*p).Stdin)
+}
+func (p *ReleaseNoteProcess) Validate(answer string) bool {
+	return true
+}
+func (p *ReleaseNoteProcess) IsTargetParameterFilled(parameter interface{}) bool {
+	param := parameter.(PackageParameter)
+	if param.ReleaseNote != "" {
+		return true
+	}
+	return false
+}
+func (p *ReleaseNoteProcess) UpdateParameter(answer string, parameter interface{}) (interface{}, error) {
+
+	param := parameter.(PackageParameter)
+	if answer == "" && param.ReleaseNote == "" {
+		answer = "Initial Release."
+	}
+	if param.ReleaseNote == "" {
+		param.ReleaseNote = answer
+	}
+	return param, nil
+}
+func (p *ReleaseNoteProcess) ShowValidateError(answer string) {
+	// Not called. no validation.
+	fmt.Println("")
+}
+func (p *ReleaseNoteProcess) SetNext(process *Process) {
+	p.NextProcess = process
+}
+func (p *ReleaseNoteProcess) Next() *Process {
+	return p.NextProcess
+}
+
+func (p *ReleaseNoteProcess) SetParameter(parameter interface{}) {
+	p.Parameter = parameter.(PackageParameter)
+}
+
+func NewReleaseNoteProcess(file *os.File) *Process {
+	var p Process
+	p = &ReleaseNoteProcess{
+		Stdin: file,
+	}
+	return &p
+}
+
+type ZipFileNameProcess struct {
+	Stdin       *os.File
+	NextProcess *Process
+	Parameter   PackageParameter
+}
+
+func (p *ZipFileNameProcess) PrintQuestion() error {
+	fmt.Printf("ZipFileName : [ default: %s.zip ] ", p.Parameter.PackageName)
+	return nil
+}
+func (p *ZipFileNameProcess) WaitForInput() (string, error) {
+	return readLine((*p).Stdin)
+}
+func (p *ZipFileNameProcess) Validate(answer string) bool {
+	// should be not
+	err := validation.Validate(answer,
+		validation.Match(regexp.MustCompile("^[a-z][a-z0-9-]*\\.zip")),
+		validation.Length(6, 64))
+	if err != nil {
+		return false
+	} else {
+		return true
+	}
+}
+func (p *ZipFileNameProcess) IsTargetParameterFilled(parameter interface{}) bool {
+	param := parameter.(PackageParameter)
+	if param.ZipFileName != "" {
+		return true
+	}
+	return false
+}
+func (p *ZipFileNameProcess) UpdateParameter(answer string, parameter interface{}) (interface{}, error) {
+
+	param := parameter.(PackageParameter)
+	if answer == "" && param.ZipFileName == "" {
+		answer = fmt.Sprintf("%s.zip", p.Parameter.PackageName)
+	}
+	if param.ZipFileName == "" {
+		param.ZipFileName = answer
+	}
+	return param, nil
+}
+func (p *ZipFileNameProcess) ShowValidateError(answer string) {
+	fmt.Printf("ZipFileName %s not allowed. \n", answer)
+	fmt.Println("ZipFileName should be *.zip file. Start with [a-z], lowercase alphanumeric with '-', lenght should be [6 - 64].")
+	fmt.Println("")
+}
+func (p *ZipFileNameProcess) SetNext(process *Process) {
+	p.NextProcess = process
+}
+func (p *ZipFileNameProcess) Next() *Process {
+	return p.NextProcess
+}
+
+func (p *ZipFileNameProcess) SetParameter(parameter interface{}) {
+	p.Parameter = parameter.(PackageParameter)
+}
+
+func NewZipFileNameProcess(file *os.File) *Process {
+	var p Process
+	p = &ZipFileNameProcess{
 		Stdin: file,
 	}
 	return &p
