@@ -23,11 +23,11 @@ var assets = func() http.FileSystem {
 		},
 		"/terraform": &vfsgen۰DirInfo{
 			name:    "terraform",
-			modTime: time.Date(2018, 10, 6, 13, 12, 51, 827018376, time.UTC),
+			modTime: time.Date(2018, 10, 6, 22, 45, 52, 352218142, time.UTC),
 		},
 		"/terraform/basic": &vfsgen۰DirInfo{
 			name:    "basic",
-			modTime: time.Date(2018, 10, 6, 14, 23, 45, 239203128, time.UTC),
+			modTime: time.Date(2018, 10, 7, 0, 2, 58, 270451361, time.UTC),
 		},
 		"/terraform/basic/NOTE.txt": &vfsgen۰CompressedFileInfo{
 			name:             "NOTE.txt",
@@ -42,6 +42,11 @@ var assets = func() http.FileSystem {
 			uncompressedSize: 325,
 
 			compressedContent: []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x4c\x8f\x31\x6b\xc3\x30\x10\x85\xf7\xfb\x15\x07\x99\x6b\xd2\xd5\x5b\xa1\x74\x0c\xc1\xc9\xd4\xed\xe2\x9c\xd3\x6b\x64\x4b\x9c\x2e\x86\x34\xdc\x7f\x2f\x96\x5b\x94\x4d\x9f\x3e\xe9\x3d\xde\x06\x0f\xa6\x72\xe5\x8c\x89\xfa\x2b\x5d\x18\x47\x9a\x64\xe0\x6c\x38\x48\x60\x80\x89\x46\x6e\xf1\xf1\x68\xf6\xab\xdf\xd1\xc8\xee\x70\xe6\xdc\xab\x24\x93\x38\x15\xfb\x5e\xd9\x1d\x81\x6e\xf6\x15\xb5\x98\xb7\x72\x74\x87\xa4\xf1\x9b\x7b\xdb\xd3\xe5\x2f\xb0\x72\xb5\x1d\xa7\xf8\x6c\x17\x76\x07\xd8\x60\xc7\x81\x29\x33\xc0\xcc\x9a\x4b\xed\x6b\xb3\x6d\xb6\xcb\xc7\x59\xce\xac\xc7\x7b\xe2\x16\x8f\xac\x4a\x43\xd4\x11\x74\x7d\xbf\x8b\xb6\xd6\x75\x95\xdd\x61\x96\x2c\x27\x09\x62\xf7\x16\xd3\xed\x14\xa4\x87\x6c\xa4\x76\x28\x2b\x5a\xb4\xff\x9c\xc6\x06\xf8\x91\xf4\x21\xa1\x4c\xcf\x2d\xbc\x2c\x69\x9f\xf5\xca\xfd\x37\x00\x00\xff\xff\x00\x5a\x02\xb7\x45\x01\x00\x00"),
+		},
+		"/terraform/basic/template.description": &vfsgen۰FileInfo{
+			name:    "template.description",
+			modTime: time.Date(2018, 10, 7, 0, 6, 9, 510095466, time.UTC),
+			content: []byte("\x46\x75\x6e\x63\x74\x69\x6f\x6e\x20\x41\x70\x70\x20\x28\x56\x32\x29\x20\x61\x6e\x64\x20\x53\x74\x6f\x72\x61\x67\x65\x20\x41\x63\x63\x6f\x75\x6e\x74"),
 		},
 		"/terraform/basic/terraform.tf": &vfsgen۰CompressedFileInfo{
 			name:             "terraform.tf",
@@ -59,11 +64,30 @@ var assets = func() http.FileSystem {
 		},
 		"/terraform/cosmos": &vfsgen۰DirInfo{
 			name:    "cosmos",
-			modTime: time.Date(2018, 10, 6, 13, 12, 44, 194673782, time.UTC),
+			modTime: time.Date(2018, 10, 7, 0, 3, 49, 952123746, time.UTC),
+		},
+		"/terraform/cosmos/template.description": &vfsgen۰FileInfo{
+			name:    "template.description",
+			modTime: time.Date(2018, 10, 7, 0, 6, 7, 651684308, time.UTC),
+			content: []byte("\x46\x75\x6e\x63\x74\x69\x6f\x6e\x20\x41\x70\x70\x20\x28\x56\x32\x29\x2c\x20\x53\x74\x6f\x72\x61\x67\x65\x20\x41\x63\x63\x6f\x75\x6e\x74\x2c\x20\x61\x6e\x64\x20\x43\x6f\x73\x6d\x6f\x73\x44\x42"),
 		},
 		"/terraform/cosmosSearch": &vfsgen۰DirInfo{
 			name:    "cosmosSearch",
-			modTime: time.Date(2018, 10, 6, 13, 12, 51, 826998782, time.UTC),
+			modTime: time.Date(2018, 10, 7, 0, 4, 34, 940465048, time.UTC),
+		},
+		"/terraform/cosmosSearch/template.description": &vfsgen۰FileInfo{
+			name:    "template.description",
+			modTime: time.Date(2018, 10, 7, 0, 5, 6, 261172273, time.UTC),
+			content: []byte("\x46\x75\x6e\x63\x74\x69\x6f\x6e\x20\x41\x70\x70\x20\x28\x56\x32\x29\x2c\x20\x53\x74\x6f\x72\x61\x67\x65\x20\x41\x63\x63\x6f\x75\x6e\x74\x2c\x20\x43\x6f\x73\x6d\x6f\x73\x44\x42\x2c\x20\x41\x7a\x75\x72\x65\x20\x53\x65\x61\x72\x63\x68"),
+		},
+		"/terraform/servicebus": &vfsgen۰DirInfo{
+			name:    "servicebus",
+			modTime: time.Date(2018, 10, 7, 0, 5, 16, 384351494, time.UTC),
+		},
+		"/terraform/servicebus/template.description": &vfsgen۰FileInfo{
+			name:    "template.description",
+			modTime: time.Date(2018, 10, 7, 0, 5, 57, 679529715, time.UTC),
+			content: []byte("\x46\x75\x6e\x63\x74\x69\x6f\x6e\x20\x41\x70\x70\x20\x28\x56\x32\x29\x2c\x20\x53\x74\x6f\x72\x61\x67\x65\x20\x41\x63\x63\x6f\x75\x6e\x74\x2c\x20\x61\x6e\x64\x20\x53\x65\x72\x76\x69\x63\x65\x20\x42\x75\x73"),
 		},
 	}
 	fs["/"].(*vfsgen۰DirInfo).entries = []os.FileInfo{
@@ -73,12 +97,23 @@ var assets = func() http.FileSystem {
 		fs["/terraform/basic"].(os.FileInfo),
 		fs["/terraform/cosmos"].(os.FileInfo),
 		fs["/terraform/cosmosSearch"].(os.FileInfo),
+		fs["/terraform/servicebus"].(os.FileInfo),
 	}
 	fs["/terraform/basic"].(*vfsgen۰DirInfo).entries = []os.FileInfo{
 		fs["/terraform/basic/NOTE.txt"].(os.FileInfo),
 		fs["/terraform/basic/manifest.yaml"].(os.FileInfo),
+		fs["/terraform/basic/template.description"].(os.FileInfo),
 		fs["/terraform/basic/terraform.tf"].(os.FileInfo),
 		fs["/terraform/basic/values.hcl"].(os.FileInfo),
+	}
+	fs["/terraform/cosmos"].(*vfsgen۰DirInfo).entries = []os.FileInfo{
+		fs["/terraform/cosmos/template.description"].(os.FileInfo),
+	}
+	fs["/terraform/cosmosSearch"].(*vfsgen۰DirInfo).entries = []os.FileInfo{
+		fs["/terraform/cosmosSearch/template.description"].(os.FileInfo),
+	}
+	fs["/terraform/servicebus"].(*vfsgen۰DirInfo).entries = []os.FileInfo{
+		fs["/terraform/servicebus/template.description"].(os.FileInfo),
 	}
 
 	return fs
@@ -103,6 +138,11 @@ func (fs vfsgen۰FS) Open(path string) (http.File, error) {
 		return &vfsgen۰CompressedFile{
 			vfsgen۰CompressedFileInfo: f,
 			gr:                        gr,
+		}, nil
+	case *vfsgen۰FileInfo:
+		return &vfsgen۰File{
+			vfsgen۰FileInfo: f,
+			Reader:          bytes.NewReader(f.content),
 		}, nil
 	case *vfsgen۰DirInfo:
 		return &vfsgen۰Dir{
@@ -183,6 +223,37 @@ func (f *vfsgen۰CompressedFile) Seek(offset int64, whence int) (int64, error) {
 }
 func (f *vfsgen۰CompressedFile) Close() error {
 	return f.gr.Close()
+}
+
+// vfsgen۰FileInfo is a static definition of an uncompressed file (because it's not worth gzip compressing).
+type vfsgen۰FileInfo struct {
+	name    string
+	modTime time.Time
+	content []byte
+}
+
+func (f *vfsgen۰FileInfo) Readdir(count int) ([]os.FileInfo, error) {
+	return nil, fmt.Errorf("cannot Readdir from file %s", f.name)
+}
+func (f *vfsgen۰FileInfo) Stat() (os.FileInfo, error) { return f, nil }
+
+func (f *vfsgen۰FileInfo) NotWorthGzipCompressing() {}
+
+func (f *vfsgen۰FileInfo) Name() string       { return f.name }
+func (f *vfsgen۰FileInfo) Size() int64        { return int64(len(f.content)) }
+func (f *vfsgen۰FileInfo) Mode() os.FileMode  { return 0444 }
+func (f *vfsgen۰FileInfo) ModTime() time.Time { return f.modTime }
+func (f *vfsgen۰FileInfo) IsDir() bool        { return false }
+func (f *vfsgen۰FileInfo) Sys() interface{}   { return nil }
+
+// vfsgen۰File is an opened file instance.
+type vfsgen۰File struct {
+	*vfsgen۰FileInfo
+	*bytes.Reader
+}
+
+func (f *vfsgen۰File) Close() error {
+	return nil
 }
 
 // vfsgen۰DirInfo is a static definition of a directory.

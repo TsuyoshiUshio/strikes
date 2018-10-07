@@ -30,7 +30,8 @@ func TestListCannotFoundVirtualDir(t *testing.T) {
 }
 
 func TestReadNormalCase(t *testing.T) {
-	file := Read("/terraform/basic/manifest.yaml")
+	file, err := Read("/terraform/basic/manifest.yaml")
+	assert.Nil(t, err)
 	stat, err := (*file).Stat()
 	assert.Nil(t, err)
 	assert.Equal(t, "manifest.yaml", stat.Name())
@@ -45,5 +46,24 @@ func TestReadCannotFoundVirtualFile(t *testing.T) {
 	monkey.Patch(log.Fatalf, fakeFatalf)
 	defer monkey.UnpatchAll()
 	Read("/something/wrong")
+	assert.Regexp(t, ExpectedMessagePart, ActualMessage)
+}
+
+func TestReadTemplateDescription(t *testing.T) {
+	content, err := ReadTemplateDescription("/terraform/basic")
+	assert.Nil(t, err)
+	assert.Regexp(t, "Function App", content, "Function App should be included on the templated description.")
+}
+
+func TestReadTemplateDescriptionNotFound(t *testing.T) {
+	ExpectedMessagePart := "Can not open virtual file"
+	var ActualMessage string
+	fakeFatalf := func(format string, v ...interface{}) {
+		ActualMessage = fmt.Sprintf(format, v)
+	}
+	monkey.Patch(log.Fatalf, fakeFatalf)
+	defer monkey.UnpatchAll()
+	_, err := ReadTemplateDescription("/something/wrong")
+	assert.NotNil(t, err)
 	assert.Regexp(t, ExpectedMessagePart, ActualMessage)
 }
