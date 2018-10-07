@@ -10,6 +10,7 @@ import (
 
 	"github.com/TsuyoshiUshio/strikes/template/assets"
 	"github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
 )
 
 type PackageParameter struct {
@@ -296,6 +297,70 @@ func (p *AuthorProcess) SetParameter(parameter interface{}) {
 func NewAuthorProcess(file *os.File) *Process {
 	var p Process
 	p = &AuthorProcess{
+		Stdin: file,
+	}
+	return &p
+}
+
+type ProjectPageProcess struct {
+	Stdin       *os.File
+	NextProcess *Process
+	Parameter   PackageParameter
+}
+
+func (p *ProjectPageProcess) PrintQuestion() error {
+	fmt.Print("Project Page : [ default: https://github.com ] ")
+	return nil
+}
+func (p *ProjectPageProcess) WaitForInput() (string, error) {
+	return readLine((*p).Stdin)
+}
+func (p *ProjectPageProcess) Validate(answer string) bool {
+	// should be valid URL
+	err := validation.Validate(answer,
+		is.URL)
+	if err != nil {
+		return false
+	} else {
+		return true
+	}
+}
+func (p *ProjectPageProcess) IsTargetParameterFilled(parameter interface{}) bool {
+	param := parameter.(PackageParameter)
+	if param.ProjectPage != "" {
+		return true
+	}
+	return false
+}
+func (p *ProjectPageProcess) UpdateParameter(answer string, parameter interface{}) (interface{}, error) {
+
+	param := parameter.(PackageParameter)
+	if answer == "" && param.ProjectPage == "" {
+		answer = "https://github.com"
+	}
+	if param.ProjectPage == "" {
+		param.ProjectPage = answer
+	}
+	return param, nil
+}
+func (p *ProjectPageProcess) ShowValidateError(answer string) {
+	fmt.Printf("Project Page should be valid URL. \n", answer)
+	fmt.Println("")
+}
+func (p *ProjectPageProcess) SetNext(process *Process) {
+	p.NextProcess = process
+}
+func (p *ProjectPageProcess) Next() *Process {
+	return p.NextProcess
+}
+
+func (p *ProjectPageProcess) SetParameter(parameter interface{}) {
+	p.Parameter = parameter.(PackageParameter)
+}
+
+func NewProjectPageProcess(file *os.File) *Process {
+	var p Process
+	p = &ProjectPageProcess{
 		Stdin: file,
 	}
 	return &p
