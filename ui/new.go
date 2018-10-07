@@ -14,14 +14,17 @@ import (
 )
 
 type PackageParameter struct {
-	TemplateDirPath string
-	PackageName     string
-	Description     string
-	Author          string
-	ProjectPage     string
-	ProjectRepo     string
-	ReleaseNote     string
-	ZipFileName     string
+	TemplateDirPath             string
+	PackageName                 string
+	Description                 string
+	Author                      string
+	ProjectPage                 string
+	ProjectRepo                 string
+	ReleaseNote                 string
+	ZipFileName                 string
+	ResourceGroupTemplate       string
+	AzureFunctionsTemplate      string
+	EnvironmentBaseNameTemplate string
 }
 
 type ChooseTemplateProcess struct {
