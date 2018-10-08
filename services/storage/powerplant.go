@@ -8,9 +8,10 @@ import (
 )
 
 type StrikesInstance struct {
-	PackageID         string // PartitionKey
+	InstanceID        string // PartitionKey
 	Name              string // RowKey
 	ResourceGroup     string
+	PackageID         string
 	PackageName       string
 	PackageVersion    string
 	PackageParameters string
@@ -19,12 +20,13 @@ type StrikesInstance struct {
 func (s *StrikesInstance) ConvertEntity(table *st.Table) *st.Entity {
 	m := make(map[string]interface{})
 	m["ResourceGroup"] = s.ResourceGroup
+	m["PackageID"] = s.PackageID
 	m["PackageName"] = s.PackageName
 	m["PackageVersion"] = s.PackageVersion
 	m["PackageParameters"] = s.PackageParameters
 
 	entity := &st.Entity{
-		PartitionKey: s.PackageID,
+		PartitionKey: s.InstanceID,
 		RowKey:       s.Name,
 		TimeStamp:    time.Now(),
 		Properties:   m,

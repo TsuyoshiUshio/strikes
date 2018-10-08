@@ -9,6 +9,7 @@ import (
 
 func TestConvert(t *testing.T) {
 
+	ExpectedInstanceID := "SomeGUID"
 	ExpectedPackageID := "foo"
 	ExpectedResourceGroup := "bar"
 	ExpectedName := "baz"
@@ -18,6 +19,7 @@ func TestConvert(t *testing.T) {
 	ExpectedTableName := "quux"
 
 	instance := &StrikesInstance{
+		InstanceID:        ExpectedInstanceID,
 		PackageID:         ExpectedPackageID,
 		Name:              ExpectedName,
 		ResourceGroup:     ExpectedResourceGroup,
@@ -27,9 +29,10 @@ func TestConvert(t *testing.T) {
 	}
 	entity := instance.ConvertEntity(&st.Table{Name: ExpectedTableName})
 	assert.Equal(t, ExpectedTableName, entity.Table.Name, "Table instance hasn't set correctly")
-	assert.Equal(t, ExpectedPackageID, entity.PartitionKey, "Wrong PartitionKey")
+	assert.Equal(t, ExpectedInstanceID, entity.PartitionKey, "Wrong PartitionKey")
 	assert.Equal(t, ExpectedName, entity.RowKey, "Wrong RowKey")
 	assert.Equal(t, ExpectedResourceGroup, entity.Properties["ResourceGroup"], "Wrong ResourceGroup")
+	assert.Equal(t, ExpectedPackageID, entity.Properties["PackageID"], "Wrong PackageID")
 	assert.Equal(t, ExpectedPackageName, entity.Properties["PackageName"], "Wrong PackageName")
 	assert.Equal(t, ExpectedPackageVersion, entity.Properties["PackageVersion"], "Wrong Package Version")
 	assert.Equal(t, ExpectedPackageParameters, entity.Properties["PackageParameters"], "Wrong Package parameters")

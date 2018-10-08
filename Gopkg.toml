@@ -82,3 +82,7 @@
 [[constraint]]
   name = "github.com/go-ozzo/ozzo-validation"
   version = "3.5.0"
+
+[[constraint]]
+  name = "github.com/rs/xid"
+  version = "1.2.1"

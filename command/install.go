@@ -10,6 +10,7 @@ import (
 	"github.com/TsuyoshiUshio/strikes/providers"
 	"github.com/TsuyoshiUshio/strikes/services/repository"
 	"github.com/TsuyoshiUshio/strikes/services/storage"
+	"github.com/rs/xid"
 	"github.com/urfave/cli"
 )
 
@@ -27,28 +28,14 @@ func (s *InstallCommand) Install(c *cli.Context) error {
 
 	fmt.Printf("packageName: %s\n instanceName: %s\n", packageName, instanceName)
 
-	// Get Metadata from Backend API
-	p, err := repository.GetPackage(packageName)
-	if err != nil {
-		log.Printf("[DEBUG] GetPackage Error: %v,\n", err)
-		log.Fatalf("Can not find package: %s \n", packageName)
-	}
+	// if the packageName directory exists, it will be local install. Not install from repository.
 
-	setUpStrikesTemp()
-	// Download Circuits
-	zipFilePath := filepath.Join(STRIKES_TEMP, "circuit.zip")
-	targetDirPath := filepath.Join(STRIKES_TEMP, "circuit")
-	err = helpers.DownloadFile(zipFilePath, p.GetCircuitZipURL())
+	p, err := retrivePackageFromRepository(packageName)
 	if err != nil {
-		log.Fatalf("Can not download cricuit zip file.: %v\n", err)
 		return err
 	}
+	targetDirPath := filepath.Join(STRIKES_TEMP, "circuit")
 
-	err = helpers.UnZip(zipFilePath, STRIKES_TEMP)
-	if err != nil {
-		log.Printf("[DEBUG] Extract Zip Error.: %v\n", err)
-		log.Fatalf("Can not extract the Zip file.: %v\n", zipFilePath)
-	}
 	manifestFilePath := filepath.Join(targetDirPath, "manifest.yaml")
 	manifest, err := config.NewManifestFromFile(manifestFilePath) // TODO after developing Provider, _ should be
 	if err != nil {
@@ -62,6 +49,7 @@ func (s *InstallCommand) Install(c *cli.Context) error {
 
 	// Update the PowerPlant
 	instance := storage.StrikesInstance{
+		InstanceID:        xid.New().String(), // Automatically generated xid sortable. more detail https://github.com/rs/xid
 		PackageID:         p.Id,
 		Name:              instanceName,
 		ResourceGroup:     result.GetResourceGroup(),
@@ -75,6 +63,33 @@ func (s *InstallCommand) Install(c *cli.Context) error {
 	}
 
 	return nil
+}
+
+func retrivePackageFromRepository(packageName string) (*repository.Package, error) {
+	// Get Metadata from Backend API
+	p, err := repository.GetPackage(packageName)
+	if err != nil {
+		log.Printf("[DEBUG] GetPackage Error: %v,\n", err)
+		log.Fatalf("Can not find package: %s \n", packageName)
+		return nil, err
+	}
+
+	setUpStrikesTemp()
+	// Download Circuits
+	zipFilePath := filepath.Join(STRIKES_TEMP, "circuit.zip")
+	err = helpers.DownloadFile(zipFilePath, p.GetCircuitZipURL())
+	if err != nil {
+		log.Fatalf("Can not download cricuit zip file.: %v\n", err)
+		return nil, err
+	}
+
+	err = helpers.UnZip(zipFilePath, STRIKES_TEMP)
+	if err != nil {
+		log.Printf("[DEBUG] Extract Zip Error.: %v\n", err)
+		log.Fatalf("Can not extract the Zip file.: %v\n", zipFilePath)
+		return nil, err
+	}
+	return p, nil
 }
 
 const STRIKES_TEMP = ".strikesTemp"
