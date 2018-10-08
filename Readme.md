@@ -142,7 +142,7 @@ This command will install the `hello-world` package on your subscription with `{
 
 # Usage
 
-you can find the useful subcommand enable us to use. this list is just currently implemented. i’ll expand more. 
+You can find the useful subcommand enable us to use. this list is just currently implemented. i’ll expand more. 
 
 ## Search packages
 
