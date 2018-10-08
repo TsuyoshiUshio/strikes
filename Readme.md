@@ -95,7 +95,7 @@ Done! Now you are ready to enjoy the life of Lightning strikes.
 # Getting Started
 
 
-Let's get started. Setup the your strikes first. You can download a binaries from Releases on this repo. Add it to your Envrionment Variables.
+Let's get started. Setup the your strikes first. You can download a binaries from [Releases](https://github.com/TsuyoshiUshio/strikes/releases) on this repo. Add it to your Envrionment Variables.
 
 Login to the Azure Portal. Open the [Azure Cloud Shell]((https://docs.microsoft.com/en-us/azure/cloud-shell/overview)) with bash.
 
