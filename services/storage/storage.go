@@ -40,7 +40,7 @@ func CreateTableIfNotExists(tableName, storageAccountName, accessKey string) err
 }
 
 func GetTable(tableName, storageAccountName, accessKey string) (*storage.Table, error) {
-	client, err := newStorageTableClient(storageAccountName, accessKey)
+	client, err := newStorageAccountClient(storageAccountName, accessKey)
 	if err != nil {
 		log.Fatalf("Storage Table Client %s can not create: %v\n", storageAccountName, err)
 		return nil, err
@@ -66,7 +66,7 @@ func CheckTableExists(tableName, storageAccountName, accessKey string) (bool, er
 	}
 }
 
-func newStorageTableClient(name, key string) (*storage.Client, error) {
+func newStorageAccountClient(name, key string) (*storage.Client, error) {
 	client, err := storage.NewBasicClient(name, key)
 	if err != nil {
 		return nil, err
