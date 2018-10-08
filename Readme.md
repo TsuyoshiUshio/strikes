@@ -141,7 +141,6 @@ $ strikes install hello-world {ResourceBase}
 This command will install the `hello-world` package on your subscription with `{ResourceBase-rg}` resource group. You can find Function App is already deployed with Storage account and App Serice Plan(Consumuption plan.) You can go potal and send request to the HttpTrigger with `?name=something`.  
 
 # Usage
-
 You can find the useful subcommand enable us to use. this list is just currently implemented. i’ll expand more. 
 
 ## Search packages
