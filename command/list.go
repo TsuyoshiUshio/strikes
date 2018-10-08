@@ -1,6 +1,7 @@
 package command
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -13,6 +14,7 @@ type ListCommand struct {
 }
 
 func (s *ListCommand) List(c *cli.Context) error {
+	fmt.Println("")
 	instances, err := storage.List()
 	if err != nil {
 		log.Fatalf("Can not get instances from the PowerPlant. : %v", err)
@@ -33,5 +35,6 @@ func (s *ListCommand) List(c *cli.Context) error {
 	table.SetBorder(false)
 	table.AppendBulk(list)
 	table.Render()
+	fmt.Println("")
 	return nil
 }
