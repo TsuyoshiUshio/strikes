@@ -28,14 +28,38 @@ func (s *InstallCommand) Install(c *cli.Context) error {
 
 	fmt.Printf("packageName: %s\n instanceName: %s\n", packageName, instanceName)
 
-	// if the packageName directory exists, it will be local install. Not install from repository.
+	command := NewPackageCommand(packageName)
+	err := (*command).Execute(packageName, instanceName, c)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
+func NewPackageCommand(packageName string) *PackageCommand {
+	var command PackageCommand
+	// check if the packageNameFile exists.
+	if helpers.Exists(packageName) {
+		command = &LocalPackageCommand{}
+	} else {
+		command = &RemotePackageCommand{}
+	}
+	return &command
+}
+
+type PackageCommand interface {
+	Execute(packageName, instanceName string, c *cli.Context) error
+}
+
+type RemotePackageCommand struct {
+}
+
+func (rc *RemotePackageCommand) Execute(packageName, instanceName string, c *cli.Context) error {
 	p, err := retrivePackageFromRepository(packageName)
 	if err != nil {
 		return err
 	}
 	targetDirPath := filepath.Join(STRIKES_TEMP, "circuit")
-
 	manifestFilePath := filepath.Join(targetDirPath, "manifest.yaml")
 	manifest, err := config.NewManifestFromFile(manifestFilePath) // TODO after developing Provider, _ should be
 	if err != nil {
@@ -57,6 +81,41 @@ func (s *InstallCommand) Install(c *cli.Context) error {
 		PackageVersion:    p.LatestVersion(), // TODO: The version should be changed by the parameter
 		PackageParameters: result.GetConfigrationsJosn(),
 	}
+
+	err = storage.InsertOrUpdate(&instance)
+	if err != nil {
+		log.Fatalf("Can not insert strikes instance to the PowerPlant. %v", err)
+	}
+
+	return nil
+}
+
+type LocalPackageCommand struct {
+}
+
+func (rc *LocalPackageCommand) Execute(packageName, instanceName string, c *cli.Context) error {
+	targetDirPath := filepath.Join(packageName, "circuit")
+	manifestFilePath := filepath.Join(targetDirPath, "manifest.yaml")
+	manifest, err := config.NewManifestFromFile(manifestFilePath) // TODO after developing Provider, _ should be
+	if err != nil {
+		log.Fatalf("Can not read manifest file from the download contents. :%v\n", err)
+		return err
+	}
+
+	// Execute deployment using Provider.
+	provider := providers.NewTerraformProvider(manifest, targetDirPath) //targetDirPath is here or adding one deep directory
+	result := provider.CreateResource(c.Args().Tail(), instanceName)    // The first one is the package name.
+
+	instance := storage.StrikesInstance{
+		InstanceID:        xid.New().String(), // Automatically generated xid sortable. more detail https://github.com/rs/xid
+		PackageID:         "",
+		Name:              instanceName,
+		ResourceGroup:     result.GetResourceGroup(),
+		PackageName:       manifest.Name,
+		PackageVersion:    manifest.Version,
+		PackageParameters: result.GetConfigrationsJosn(),
+	}
+
 	err = storage.InsertOrUpdate(&instance)
 	if err != nil {
 		log.Fatalf("Can not insert strikes instance to the PowerPlant. %v", err)
