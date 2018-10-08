@@ -15,6 +15,7 @@ type StrikesInstance struct {
 	PackageName       string
 	PackageVersion    string
 	PackageParameters string
+	TimeStamp         time.Time
 }
 
 func (s *StrikesInstance) ConvertEntity(table *st.Table) *st.Entity {
@@ -33,6 +34,34 @@ func (s *StrikesInstance) ConvertEntity(table *st.Table) *st.Entity {
 		Table:        table,
 	}
 	return entity
+}
+
+func convertFromEntity(entity *st.Entity) *StrikesInstance {
+	instance := StrikesInstance{
+		InstanceID:        entity.PartitionKey,
+		Name:              entity.RowKey,
+		ResourceGroup:     entity.Properties["ResourceGroup"].(string),
+		PackageID:         entity.Properties["PackageID"].(string),
+		PackageName:       entity.Properties["PackageName"].(string),
+		PackageVersion:    entity.Properties["PackageVersion"].(string),
+		PackageParameters: entity.Properties["PackageParameters"].(string),
+		TimeStamp:         entity.TimeStamp,
+	}
+	return &instance
+}
+
+func List() (*[]StrikesInstance, error) {
+	table, err := getTableReference()
+	if err != nil {
+		return nil, err
+	}
+	options := st.QueryOptions{}
+	results, err := table.QueryEntities(30, st.NoMetadata, &options)
+	instances := make([]StrikesInstance, 0)
+	for _, entity := range results.Entities {
+		instances = append(instances, *(convertFromEntity(entity)))
+	}
+	return &instances, nil
 }
 
 func InsertOrUpdate(instance *StrikesInstance) error {
