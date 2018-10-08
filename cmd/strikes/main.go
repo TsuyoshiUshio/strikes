@@ -50,6 +50,12 @@ func main() {
 			Aliases: []string{"in"},
 			Usage:   "Install Lightning Strikes Package.",
 			Action:  (&command.InstallCommand{}).Install,
+			Flags: []cli.Flag{
+				cli.BoolFlag{
+					Name:  "ignorePowerPlant, i",
+					Usage: "Does not upload metadata to powerplant. Used for testing purpose.",
+				},
+			},
 		},
 		{
 			Name:    "search",

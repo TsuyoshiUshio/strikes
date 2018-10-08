@@ -3,6 +3,7 @@ package command
 import (
 	"fmt"
 	"log"
+	"os"
 	"path/filepath"
 
 	"github.com/TsuyoshiUshio/strikes/config"
@@ -82,9 +83,13 @@ func (rc *RemotePackageCommand) Execute(packageName, instanceName string, c *cli
 		PackageParameters: result.GetConfigrationsJosn(),
 	}
 
-	err = storage.InsertOrUpdate(&instance)
-	if err != nil {
-		log.Fatalf("Can not insert strikes instance to the PowerPlant. %v", err)
+	ignorePowerPlant := c.Bool("i")
+	if !ignorePowerPlant {
+
+		err = storage.InsertOrUpdate(&instance)
+		if err != nil {
+			log.Fatalf("Can not insert strikes instance to the PowerPlant. %v", err)
+		}
 	}
 
 	return nil
@@ -102,9 +107,19 @@ func (rc *LocalPackageCommand) Execute(packageName, instanceName string, c *cli.
 		return err
 	}
 
+	// Upload the current packages and append the parameter to the terraform to override the repository base usl
+	err = uploadTargetDirectory(manifest, packageName)
+	if err != nil {
+		fmt.Printf("%v,\n", err)
+		return err
+	}
 	// Execute deployment using Provider.
-	provider := providers.NewTerraformProvider(manifest, targetDirPath) //targetDirPath is here or adding one deep directory
-	result := provider.CreateResource(c.Args().Tail(), instanceName)    // The first one is the package name.
+	provider := providers.NewTerraformProvider(manifest, targetDirPath)
+	args, err := overrideRepositoryBaseUri(c)
+	if err != nil {
+		return err
+	} //targetDirPath is here or adding one deep directory
+	result := provider.CreateResource(args, instanceName) // The first one is the package name.
 
 	instance := storage.StrikesInstance{
 		InstanceID:        xid.New().String(), // Automatically generated xid sortable. more detail https://github.com/rs/xid
@@ -116,11 +131,72 @@ func (rc *LocalPackageCommand) Execute(packageName, instanceName string, c *cli.
 		PackageParameters: result.GetConfigrationsJosn(),
 	}
 
-	err = storage.InsertOrUpdate(&instance)
-	if err != nil {
-		log.Fatalf("Can not insert strikes instance to the PowerPlant. %v", err)
+	ignorePowerPlant := c.Bool("i")
+	if !ignorePowerPlant {
+
+		err = storage.InsertOrUpdate(&instance)
+		if err != nil {
+			log.Fatalf("Can not insert strikes instance to the PowerPlant. %v", err)
+		}
 	}
 
+	return nil
+}
+
+const (
+	LOCAL_REPOSITORY_CONTAINER_NAME = "repository"
+)
+
+func overrideRepositoryBaseUri(c *cli.Context) ([]string, error) {
+	config, err := getPowerPlantConfig()
+	if err != nil {
+		return nil, err
+	}
+	// repository_base_uri
+	args := c.Args().Tail()
+	args = append(args, "--set")
+	args = append(args, "repository_base_uri="+fmt.Sprintf("https://%s.blob.core.windows.net/repository/", config.StorageAccountName))
+	return args, nil
+}
+
+func getPowerPlantConfig() (*config.PowerPlantConfig, error) {
+	context, err := config.NewConfigContext()
+	if err != nil {
+		return nil, err
+	}
+	config, err := context.GetPowerPlantConfig()
+	if err != nil {
+		return nil, err
+	}
+	return config, nil
+}
+
+func uploadTargetDirectory(manifest *config.Manifest, packageDir string) error {
+	config, err := getPowerPlantConfig()
+	if err != nil {
+		return err
+	}
+	dir, err := os.Open(filepath.Join(packageDir, "package"))
+	if err != nil {
+		return err
+	}
+	entries, err := dir.Readdir(0)
+	if err != nil {
+		return err
+	}
+	err = storage.CreateContainerIfNotExists(config.StorageAccountName, config.StorageAccountKey, LOCAL_REPOSITORY_CONTAINER_NAME)
+	if err != nil {
+		return err
+	}
+	SasQuery := storage.FetchSASQueryParameters(config.StorageAccountName, config.StorageAccountKey, LOCAL_REPOSITORY_CONTAINER_NAME)
+	for _, zipFile := range entries {
+		blob := helpers.NewBlockBlobWithSASQueryParameter(config.StorageAccountName, LOCAL_REPOSITORY_CONTAINER_NAME, getPackageBlobName(manifest, zipFile.Name()), "?"+SasQuery)
+		zipFilePath := filepath.Join(packageDir, "package", zipFile.Name())
+		err = blob.Upload(zipFilePath)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 

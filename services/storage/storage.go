@@ -3,9 +3,11 @@ package storage
 import (
 	"log"
 	"os"
+	"time"
 
 	storageAccount "github.com/Azure/azure-sdk-for-go/services/storage/mgmt/2017-06-01/storage"
 	"github.com/Azure/azure-sdk-for-go/storage"
+	"github.com/Azure/azure-storage-blob-go/2018-03-28/azblob"
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/TsuyoshiUshio/strikes/helpers"
 )
@@ -37,6 +39,44 @@ func CreateTableIfNotExists(tableName, storageAccountName, accessKey string) err
 		return err
 	}
 	return nil
+}
+
+func GetContainer(storageAccountName, accessKey, containerName string) (*storage.Container, error) {
+	client, err := newStorageAccountClient(storageAccountName, accessKey)
+	if err != nil {
+		return nil, err
+	}
+	blobClient := client.GetBlobService()
+	return blobClient.GetContainerReference(containerName), nil
+}
+
+func CreateContainerIfNotExists(storageAccountName, accessKey, containerName string) error {
+	container, err := GetContainer(storageAccountName, accessKey, containerName)
+	options := storage.CreateContainerOptions{
+		Access: storage.ContainerAccessTypeBlob,
+	}
+	_, err = container.CreateIfNotExists(&options)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func FetchSASQueryParameters(accountName, accountKey, containerName string) string {
+	credential, err := azblob.NewSharedKeyCredential(accountName, accountKey)
+	if err != nil {
+		panic(err)
+	}
+	// for the go lang
+	sasQueryParams := azblob.BlobSASSignatureValues{
+		Protocol:      azblob.SASProtocolHTTPS,
+		ExpiryTime:    time.Now().UTC().Add(48 * time.Hour),
+		ContainerName: containerName,
+		BlobName:      "",
+		Permissions:   azblob.ContainerSASPermissions{Add: true, Read: true, Write: true}.String(),
+	}.NewSASQueryParameters(credential)
+	qb := sasQueryParams.Encode()
+	return qb
 }
 
 func GetTable(tableName, storageAccountName, accessKey string) (*storage.Table, error) {
