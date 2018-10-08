@@ -69,6 +69,12 @@ func main() {
 			Usage:   "Generate circuit from a template.",
 			Action:  (&command.NewCommand{}).New,
 		},
+		{
+			Name:    "list",
+			Aliases: []string{"l"},
+			Usage:   "List instances which already installed.",
+			Action:  (&command.ListCommand{}).List,
+		},
 	}
 	a := os.Args
 	app.Run(a)

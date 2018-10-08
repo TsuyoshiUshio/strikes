@@ -86,3 +86,7 @@
 [[constraint]]
   name = "github.com/rs/xid"
   version = "1.2.1"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/olekukonko/tablewriter"
