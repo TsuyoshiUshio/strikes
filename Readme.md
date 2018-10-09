@@ -312,6 +312,14 @@ go run template/cmd/generate.go
 
 It will generate `template/assets/assets.go` file. Dont' edit this. Then build the binary. Then you can get the new templates. :) 
 
+# Debugging 
+
+You can output detail log for development purpose. 
+
+```bash
+export ST_LOG=DEUBG
+```
+
 # Where is the main file?
 
 You can find it in [cmd/strikes/main.go](https://github.com/TsuyoshiUshio/strikes/blob/master/cmd/strikes/main.go).
