@@ -67,7 +67,7 @@ func (b *BlockBlob) Upload(uploadFilePath string) error {
 
 func (b *BlockBlob) upload(readSeeker io.ReadSeeker) error {
 	ctx := context.Background()
-	_, err := b.BlockBlobURL.Upload(ctx, readSeeker, azblob.BlobHTTPHeaders{ContentType: "text/plain"}, azblob.Metadata{}, azblob.BlobAccessConditions{})
+	_, err := b.BlockBlobURL.Upload(ctx, readSeeker, azblob.BlobHTTPHeaders{ContentType: "application/zip"}, azblob.Metadata{}, azblob.BlobAccessConditions{})
 	return err
 }
 

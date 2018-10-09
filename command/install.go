@@ -2,6 +2,9 @@ package command
 
 import (
 	"fmt"
+	"html/template"
+	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -92,6 +95,11 @@ func (rc *RemotePackageCommand) Execute(packageName, instanceName string, c *cli
 		}
 	}
 
+	err = outputNote(targetDirPath, instance.ResourceGroup, instance.Name, os.Stdout)
+	if err != nil {
+		fmt.Printf("Can not output package NOTE.txt, %v\n", err)
+	}
+
 	return nil
 }
 
@@ -140,6 +148,43 @@ func (rc *LocalPackageCommand) Execute(packageName, instanceName string, c *cli.
 		}
 	}
 
+	err = outputNote(targetDirPath, instance.ResourceGroup, instance.Name, os.Stdout)
+	if err != nil {
+		fmt.Printf("Can not output package NOTE.txt, %v\n", err)
+	}
+
+	return nil
+}
+
+type NoteParameters struct {
+	ResourceGroupTemplate       string
+	AzureFunctionsTemplate      string
+	EnvironmentBaseNameTemplate string
+}
+
+func outputNote(targetDirPath, resourceGroup, instanceName string, w io.Writer) error {
+	noteFileDir := filepath.Join(targetDirPath, "NOTE.txt")
+	file, err := os.Open(noteFileDir)
+	if err != nil {
+		log.Fatalf("Can not open NOTE.txt file. : %s\n", noteFileDir)
+		return err
+	}
+	parameter := NoteParameters{
+		ResourceGroupTemplate: resourceGroup,
+		AzureFunctionsTemplate: instanceName + "app.azurewebsites.net",
+		EnvironmentBaseNameTemplate: instanceName,
+	}
+	content, err := ioutil.ReadAll(file)
+	tmpl, err := template.New(instanceName).Parse(string(content))
+	if err != nil {
+		fmt.Printf("Can not create the template. %v\n", err)
+		return err
+	}
+	err = tmpl.Execute(w, parameter)
+	if err != nil {
+		fmt.Printf("Cannot generate NOTE.txt output. : %v\n", err)
+		return err
+	}
 	return nil
 }
 

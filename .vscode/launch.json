@@ -10,8 +10,9 @@
             "request": "launch",
             "mode": "debug",
             "program": "cmd/strikes/main.go", 
+            "cwd": "${workspaceRoot}",
             "args": [
-               "new", "terraform", 
+               "install", "./samples/hello-world", "sasomehello2023", "-i"
             ]
         },
         {

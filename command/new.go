@@ -71,7 +71,7 @@ func (s *NewCommand) New(c *cli.Context) error {
 	)
 	fmt.Println("")
 	generateTempalte(&param)
-	fmt.Println("%s template has beeen generated.", param.TemplateDirPath)
+	fmt.Printf("%s template has beeen generated.\n", param.TemplateDirPath)
 	return nil
 }
 
@@ -79,17 +79,17 @@ func generateTempalte(parameter *ui.PackageParameter) error {
 	// create a directry with the PackageName
 	err := helpers.CreateDirIfNotExist(filepath.Join(".", parameter.PackageName))
 	if err != nil {
-		fmt.Println("Can not create the directory: %sf\n", filepath.Join(".", parameter.PackageName))
+		fmt.Printf("Can not create the directory: %sf\n", filepath.Join(".", parameter.PackageName))
 		return err
 	}
 	err = helpers.CreateDirIfNotExist(filepath.Join(".", parameter.PackageName, "circuit"))
 	if err != nil {
-		fmt.Println("Can not create the directory: %sf\n", filepath.Join(".", parameter.PackageName, "circuit"))
+		fmt.Printf("Can not create the directory: %sf\n", filepath.Join(".", parameter.PackageName, "circuit"))
 		return err
 	}
 	err = helpers.CreateDirIfNotExist(filepath.Join(".", parameter.PackageName, "package"))
 	if err != nil {
-		fmt.Println("Can not create the directory: %sf\n", filepath.Join(".", parameter.PackageName, "package"))
+		fmt.Printf("Can not create the directory: %sf\n", filepath.Join(".", parameter.PackageName, "package"))
 		return err
 	}
 	// Iterate with the File with the TmeplateDirPath
@@ -98,19 +98,19 @@ func generateTempalte(parameter *ui.PackageParameter) error {
 	for _, f := range d {
 		file, err := os.Create(filepath.Join(".", parameter.PackageName, "circuit", f.Name()))
 		if err != nil {
-			fmt.Println("Can not create the file %s\n", filepath.Join(".", parameter.PackageName, "circuit", f.Name()))
+			fmt.Printf("Can not create the file %s\n", filepath.Join(".", parameter.PackageName, "circuit", f.Name()))
 			return err
 		}
 		source, _ := assets.Read(parameter.TemplateDirPath + "/" + f.Name())
 		content, err := ioutil.ReadAll(*source)
 		tmpl, err := template.New(f.Name()).Parse(string(content))
 		if err != nil {
-			fmt.Println("Can not create the template. %v\n", err)
+			fmt.Printf("Can not create the template. %v\n", err)
 			return err
 		}
 		err = tmpl.Execute(file, parameter)
 		if err != nil {
-			fmt.Println("Can not templating the file. : %s\n", f.Name())
+			fmt.Printf("Can not templating the file. : %s\n", f.Name())
 			return err
 		}
 		file.Close()

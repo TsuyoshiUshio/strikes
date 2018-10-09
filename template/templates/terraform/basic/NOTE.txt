@@ -5,5 +5,6 @@ Please refer these resources:
 Resource Group  : {{.ResourceGroupTemplate}}
 Azure Functions : {{.AzureFunctionsTemplate}}
 
-Go to https://{{.EnvironmentBaseNameTemplate}}app.azurewebsites.net/  You can see the all functions deployed. 
+Go to https://{{.EnvironmentBaseNameTemplate}}app.azurewebsites.net/api/HelloWorld
 
+Happy strikes!
