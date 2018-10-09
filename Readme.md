@@ -4,6 +4,10 @@ Serverless package manager for Azure Functions. (Private preview)
 
 [![Build Status](https://6packdevops.visualstudio.com/StrikesRepository/_apis/build/status/TsuyoshiUshio.strikes)](https://6packdevops.visualstudio.com/StrikesRepository/_build/latest?definitionId=16)
 
+This is the quick demo of strikes (Private Preview).
+
+[![Strikes demo](https://img.youtube.com/vi/j4M_uexFwjg/0.jpg)](https://www.youtube.com/watch?v=j4M_uexFwjg)
+
 # Description
 
 When we want to share the Azure Function code, it usualy require to set up other resources, like CosmosDB, Storage Account, EventHubs and so on. This project is inspired by [helm](https://docs.helm.sh/) which is the popular package manager for kubernetes. Lightning strikes help you to install serverless project with whole Azure Resources.
