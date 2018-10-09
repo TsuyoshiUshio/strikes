@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/bouk/monkey"
@@ -40,7 +41,7 @@ func TestOutputNote(t *testing.T) {
 	ExpectedResourceGroup := "foo"
 	ExpectedInstanceName := "bar"
 	InputTargetPath := "baz"
-	ExpectedFilePath := "baz/NOTE.txt"
+	ExpectedFilePath := filepath.Join("baz", "NOTE.txt")
 
 	var ActualFilePath string
 

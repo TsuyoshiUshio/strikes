@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"log"
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/bouk/monkey"
@@ -12,7 +13,8 @@ import (
 )
 
 func TestReadManifest(t *testing.T) {
-	manifest, err := NewManifestFromFile("./test-fixture/manifest-basic/manifest.yaml")
+	manifestFile := filepath.Join(".", "test-fixture", "manifest-basic", "manifest.yaml")
+	manifest, err := NewManifestFromFile(manifestFile)
 	if err != nil {
 		panic(err)
 	}
@@ -41,12 +43,12 @@ func TestReadManifestWithoutFile(t *testing.T) {
 	patch := monkey.Patch(os.Exit, fakeExit)
 	defer patch.Unpatch()
 	//var err error.Error
+	manifestFile := filepath.Join(".", "test-fixture", "manifest-basic", "foo.yaml")
 	output := captureOutput(func() {
-		_, _ = NewManifestFromFile("./test-fixture/manifest-basic/foo.yaml")
+		_, _ = NewManifestFromFile(manifestFile)
 	})
 
-	assert.Regexp(t, "Cannot read Manifest file: open ./test-fixture/manifest-basic/foo.yaml: no such file or directory", output)
-
+	assert.Regexp(t, "Cannot read Manifest file: open "+manifestFile+": no such file or directory", output)
 }
 
 func TestReadManifestWithMissingColumn(t *testing.T) {
@@ -56,9 +58,10 @@ func TestReadManifestWithMissingColumn(t *testing.T) {
 	patch := monkey.Patch(os.Exit, fakeExit)
 	defer patch.Unpatch()
 
+	manifestFile := filepath.Join(".", "test-fixture", "manifest-wrong-yaml", "manifest.yaml")
 	//var err error.Error
 	output := captureOutput(func() {
-		_, _ = NewManifestFromFile("./test-fixture/manifest-wrong-yaml/manifest.yaml")
+		_, _ = NewManifestFromFile(manifestFile)
 	})
 	assert.Regexp(t, "Cannot unmarshall the Manifest file: yaml: mapping values are not allowed in this context\n", output)
 
@@ -70,13 +73,15 @@ func validateValidationError(t *testing.T, tag string, field string, validationE
 }
 
 func TestValidateManifestWithSuccess(t *testing.T) {
-	manifest, _ := NewManifestFromFile("./test-fixture/manifest-basic/manifest.yaml")
+	manifestFile := filepath.Join(".", "test-fixture", "manifest-basic", "manifest.yaml")
+	manifest, _ := NewManifestFromFile(manifestFile)
 	err := manifest.Validate()
 	assert.Nil(t, err, "err should be nil.")
 }
 
 func TestValidateManifestWithFailure(t *testing.T) {
-	manifest, _ := NewManifestFromFile("./test-fixture/manifest-validation-fail/manifest.yaml")
+	manifestFile := filepath.Join(".", "test-fixture", "manifest-validation-fail", "manifest.yaml")
+	manifest, _ := NewManifestFromFile(manifestFile)
 	err := manifest.Validate()
 	validationErrors := err.(validator.ValidationErrors)
 	assert.Equal(t, 5, len(validationErrors), "Number of the error should be 5.")

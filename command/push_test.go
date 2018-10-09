@@ -3,6 +3,7 @@ package command
 import (
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"reflect"
 	"testing"
 	"time"
@@ -123,10 +124,10 @@ func TestCreatePackageBlob(t *testing.T) {
 	}
 	ExpectedPackageBase := "sample/hello-world"
 
-	ExpectedPackagePath01 := ExpectedPackageBase + "/package/" + ExpectedZipFileName01
+	ExpectedPackagePath01 := filepath.Join(ExpectedPackageBase, "/package/", ExpectedZipFileName01)
 	ExpectedBlobName01 := ExpectedPackageName + "/" + ExpectedPackageVersion + "/package/" + ExpectedZipFileName01
 	ExpectedURL01 := ExpectedStorageAccountBaseURL + "/" + ExpectedBlobName01
-	ExpectedPackagePath02 := ExpectedPackageBase + "/package/" + ExpectedZipFileName02
+	ExpectedPackagePath02 := filepath.Join(ExpectedPackageBase, "/package/", ExpectedZipFileName02)
 	ExpectedBlobName02 := ExpectedPackageName + "/" + ExpectedPackageVersion + "/package/" + ExpectedZipFileName02
 	ExpectedURL02 := ExpectedStorageAccountBaseURL + "/" + ExpectedBlobName02
 

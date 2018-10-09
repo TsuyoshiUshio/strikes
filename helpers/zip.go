@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -43,7 +44,11 @@ func Zip(source, target string) error {
 		}
 
 		if info.IsDir() {
-			header.Name += "/" // TODO Check if it is OK for Windows
+			if runtime.GOOS == "windows" {
+				header.Name += "\\"
+			} else {
+				header.Name += "/"
+			}
 		} else {
 			header.Method = zip.Deflate
 		}
