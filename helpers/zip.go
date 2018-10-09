@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -39,7 +40,11 @@ func Zip(source, target string) error {
 		}
 
 		if baseDir != "" {
-			header.Name = filepath.Join(baseDir, strings.TrimPrefix(path, source))
+			file := filepath.Join(baseDir, strings.TrimPrefix(path, source))
+			if runtime.GOOS == "windows" {
+				file = strings.Replace(filepath.Join(baseDir, strings.TrimPrefix(path, source)), "\\", "/", -1)
+			}
+			header.Name = file
 		}
 
 		if info.IsDir() {
