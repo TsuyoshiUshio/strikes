@@ -94,12 +94,12 @@ func (rc *RemotePackageCommand) Execute(packageName, instanceName string, c *cli
 			log.Fatalf("Can not insert strikes instance to the PowerPlant. %v", err)
 		}
 	}
-
+	fmt.Println("")
 	err = outputNote(targetDirPath, instance.ResourceGroup, instance.Name, os.Stdout)
 	if err != nil {
 		fmt.Printf("Can not output package NOTE.txt, %v\n", err)
 	}
-
+	fmt.Println("")
 	return nil
 }
 
@@ -147,12 +147,12 @@ func (rc *LocalPackageCommand) Execute(packageName, instanceName string, c *cli.
 			log.Fatalf("Can not insert strikes instance to the PowerPlant. %v", err)
 		}
 	}
-
+	fmt.Println("")
 	err = outputNote(targetDirPath, instance.ResourceGroup, instance.Name, os.Stdout)
 	if err != nil {
 		fmt.Printf("Can not output package NOTE.txt, %v\n", err)
 	}
-
+	fmt.Println("")
 	return nil
 }
 
