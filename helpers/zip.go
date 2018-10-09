@@ -85,6 +85,8 @@ func UnZip(archive, target string) error {
 		if file.FileInfo().IsDir() {
 			os.MkdirAll(path, file.Mode())
 			continue
+		} else {
+			os.MkdirAll(filepath.Dir(path), 0777)
 		}
 
 		fileReader, err := file.Open()
@@ -93,6 +95,7 @@ func UnZip(archive, target string) error {
 		}
 		defer fileReader.Close()
 
+		// there is not intermediate directory create it.
 		targetFile, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
 		if err != nil {
 			return err

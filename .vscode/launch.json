@@ -12,7 +12,7 @@
             "program": "cmd/strikes/main.go", 
             "cwd": "${workspaceRoot}",
             "args": [
-               "install", "./samples/hello-world", "sasomehello2023", "-i"
+               "install", "durable-world", "saxxxxdd2023", "-i"
             ]
         },
         {
