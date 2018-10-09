@@ -38,7 +38,7 @@ func captureOutput(f func()) string {
 }
 func TestReadManifestWithoutFile(t *testing.T) {
 	fakeExit := func(int) {
-		// do nothing
+		// do nothing.
 	}
 	patch := monkey.Patch(os.Exit, fakeExit)
 	defer patch.Unpatch()
