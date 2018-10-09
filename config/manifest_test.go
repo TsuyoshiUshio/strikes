@@ -48,7 +48,7 @@ func TestReadManifestWithoutFile(t *testing.T) {
 		_, _ = NewManifestFromFile(manifestFile)
 	})
 
-	assert.Regexp(t, "Cannot read Manifest file: open "+manifestFile+": no such file or directory", output)
+	assert.Regexp(t, "Cannot read Manifest file: open ", output)
 }
 
 func TestReadManifestWithMissingColumn(t *testing.T) {
