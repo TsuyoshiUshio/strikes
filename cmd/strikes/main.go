@@ -13,7 +13,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "Lightning Strikes"
 	app.Usage = "The Azure Functions Package management tool"
-	app.Version = "0.0.3"
+	app.Version = "0.0.4"
 	app.Commands = []cli.Command{
 		{
 			Name:    "init",
