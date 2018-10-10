@@ -1,0 +1,17 @@
+# Strikes package manifest file
+
+name: {{.PackageName}}
+description: {{.Description}} 
+author: {{.Author}}
+projectPage: {{.ProjectPage}}
+projectRepo: {{.ProjectRepo}}
+
+# Release
+
+version: 1.0.0
+providerType: Terraform
+releaseNote: {{.ReleaseNote}}
+visibility: public
+startScript: terraform.tf
+zipFileNames:
+- {{.ZipFileName}}
