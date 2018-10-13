@@ -135,8 +135,8 @@ resource "azurerm_function_app" "test" {
   app_settings {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.test.instrumentation_key}"
     "FUNCTIONS_WORKER_RUNTIME" = "${var.language}"
-    # This going to change into WEBSITE_RUN_FROM_PACKAGE
     "WEBSITE_RUN_FROM_PACKAGE" = "${var.repository_base_uri}${var.package_name}/${var.package_version}/package/${var.package_zip_name_0}"
+    "cosmosDBConnection" = "AccountEndpoint=${azurerm_cosmosdb_account.db.endpoint};AccountKey=${azurerm_cosmosdb_account.db.primary_master_key};"
   }
 
   depends_on = ["azurerm_app_service_plan.test", "azurerm_resource_group.test", "azurerm_storage_account.test"] 

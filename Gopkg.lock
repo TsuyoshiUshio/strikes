@@ -2,29 +2,36 @@
 
 
 [[projects]]
+  digest = "1:d2ccb697dc13c8fbffafa37baae97594d5592ae8f7e113471084137315536e2b"
   name = "github.com/Azure/azure-pipeline-go"
   packages = ["pipeline"]
+  pruneopts = "UT"
   revision = "7571e8eb0876932ab505918ff7ed5107773e5ee2"
   version = "0.1.7"
 
 [[projects]]
+  digest = "1:9947a1cacb59c776b4d9b560f3541f098d120bb5387acc302c2eee7b6fbd1bcf"
   name = "github.com/Azure/azure-sdk-for-go"
   packages = [
     "services/resources/mgmt/2018-02-01/resources",
     "services/storage/mgmt/2017-06-01/storage",
     "storage",
-    "version"
+    "version",
   ]
+  pruneopts = "UT"
   revision = "4650843026a7fdec254a8d9cf893693a254edd0b"
   version = "v16.2.1"
 
 [[projects]]
+  digest = "1:be02190f99b731d813f70310d536ed106d3f863823b092c5302ebc6c27e6304d"
   name = "github.com/Azure/azure-storage-blob-go"
   packages = ["2018-03-28/azblob"]
+  pruneopts = "UT"
   revision = "bb46532f68b79e9e1baca8fb19a382ef5d40ed33"
   version = "0.2.0"
 
 [[projects]]
+  digest = "1:e782078a170a8f36451e2b6468d0cce2ac394d809054d8ec6820961fa58430fe"
   name = "github.com/Azure/go-autorest"
   packages = [
     "autorest",
@@ -35,79 +42,101 @@
     "autorest/to",
     "autorest/validation",
     "logger",
-    "version"
+    "version",
   ]
+  pruneopts = "UT"
   revision = "39013ecb48eaf6ced3f4e3e1d95515140ce6b3cf"
   version = "v10.15.2"
 
 [[projects]]
   branch = "master"
+  digest = "1:9831b48eaba66c6eee6b8bc698d5a669088313cfee3c94435056e3522e4a53fb"
   name = "github.com/MakeNowJust/heredoc"
   packages = ["."]
+  pruneopts = "UT"
   revision = "e9091a26100e9cfb2b6a8f470085bfa541931a91"
 
 [[projects]]
+  digest = "1:320e7ead93de9fd2b0e59b50fd92a4d50c1f8ab455d96bc2eb083267453a9709"
   name = "github.com/asaskevich/govalidator"
   packages = ["."]
+  pruneopts = "UT"
   revision = "ccb8e960c48f04d6935e72476ae4a51028f9e22f"
   version = "v9"
 
 [[projects]]
+  digest = "1:d8abdc866ebbe05fa3bce50863e23afd4c73c804b90c908caa864e86df1db8a1"
   name = "github.com/bouk/monkey"
   packages = ["."]
+  pruneopts = "UT"
   revision = "5df1f207ff77e025801505ae4d903133a0b4353f"
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
+  pruneopts = "UT"
   revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
   version = "v1.1.1"
 
 [[projects]]
+  digest = "1:76dc72490af7174349349838f2fe118996381b31ea83243812a97e5a0fd5ed55"
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
+  pruneopts = "UT"
   revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
   version = "v3.2.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:e608bc2d867c3ded40ccea5417715393a50704ac24004afa87431a0e1976e50d"
   name = "github.com/dimchansky/utfbom"
   packages = ["."]
+  pruneopts = "UT"
   revision = "5448fe645cb1964ba70ac8f9f2ffe975e61a536c"
-  version = "v1.0.0"
 
 [[projects]]
+  digest = "1:aa047c900450fea2242fbb449076eb20cea8278f3b15d2db1950a3c8da8e4308"
   name = "github.com/go-ozzo/ozzo-validation"
   packages = [
     ".",
-    "is"
+    "is",
   ]
+  pruneopts = "UT"
   revision = "106681dbb37bfa3e7683c4c8129cb7f5925ea3e9"
   version = "v3.5.0"
 
 [[projects]]
+  digest = "1:e1ff887e232b2d8f4f7c7db15a5fac7be418025afc4dda53c59c765dbb5aa6b4"
   name = "github.com/go-playground/locales"
   packages = [
     ".",
-    "currency"
+    "currency",
   ]
+  pruneopts = "UT"
   revision = "f63010822830b6fe52288ee52d5a1151088ce039"
   version = "v0.12.1"
 
 [[projects]]
+  digest = "1:e022cf244bcac1b6ef933f1a2e0adcf6a6dfd7b872d8d41e4d4179bb09a87cbc"
   name = "github.com/go-playground/universal-translator"
   packages = ["."]
+  pruneopts = "UT"
   revision = "b32fa301c9fe55953584134cb6853a13c87ec0a1"
   version = "v0.16.0"
 
 [[projects]]
+  digest = "1:bc38c7c481812e178d85160472e231c5e1c9a7f5845d67e23ee4e706933c10d8"
   name = "github.com/golang/mock"
   packages = ["gomock"]
+  pruneopts = "UT"
   revision = "c34cdb4725f4c3844d095133c6e40e448b86589b"
   version = "v1.1.1"
 
 [[projects]]
   branch = "master"
+  digest = "1:12247a2e99a060cc692f6680e5272c8adf0b8f572e6bce0d7095e624c958a240"
   name = "github.com/hashicorp/hcl"
   packages = [
     ".",
@@ -118,112 +147,169 @@
     "hcl/token",
     "json/parser",
     "json/scanner",
-    "json/token"
+    "json/token",
   ]
+  pruneopts = "UT"
   revision = "ef8a98b0bbce4a65b5aa4c368430a80ddc533168"
 
 [[projects]]
+  digest = "1:16ae35b3a854c667baaf55ff5d455c486f7c2baf040a2727f2ef0e4b096b2a95"
   name = "github.com/hashicorp/logutils"
   packages = ["."]
+  pruneopts = "UT"
   revision = "a335183dfd075f638afcc820c90591ca3c97eba6"
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:4e878df5f4e9fd625bf9c9aac77ef7cbfa4a74c01265505527c23470c0e40300"
   name = "github.com/marstr/guid"
   packages = ["."]
+  pruneopts = "UT"
   revision = "8bd9a64bf37eb297b492a4101fb28e80ac0b290f"
   version = "v1.1.0"
 
 [[projects]]
+  digest = "1:cdb899c199f907ac9fb50495ec71212c95cb5b0e0a8ee0800da0238036091033"
   name = "github.com/mattn/go-runewidth"
   packages = ["."]
+  pruneopts = "UT"
   revision = "ce7b0b5c7b45a81508558cd1dba6bb1e4ddb51bb"
   version = "v0.0.3"
 
 [[projects]]
   branch = "master"
+  digest = "1:f611266e3ac01ab4adb6f1d67f6c1be82998d02f452faff450596658712d860b"
   name = "github.com/olekukonko/tablewriter"
   packages = ["."]
+  pruneopts = "UT"
   revision = "be2c049b30ccd4d3fd795d6bf7dce74e42eeedaa"
 
 [[projects]]
+  digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
+  pruneopts = "UT"
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:2e76a73cb51f42d63a2a1a85b3dc5731fd4faf6821b434bd0ef2c099186031d6"
   name = "github.com/rs/xid"
   packages = ["."]
+  pruneopts = "UT"
   revision = "15d26544def341f036c5f8dca987a4cbe575032c"
   version = "v1.2.1"
 
 [[projects]]
+  digest = "1:274f67cb6fed9588ea2521ecdac05a6d62a8c51c074c1fccc6a49a40ba80e925"
   name = "github.com/satori/go.uuid"
   packages = ["."]
+  pruneopts = "UT"
   revision = "f58768cc1a7a7e77a3bd49e98cdd21419399b6a3"
   version = "v1.2.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:7ca2584fa7da0520cd2d1136a10194fe5a5b220bdb215074ab6f7b5ad91115f4"
   name = "github.com/shurcooL/httpfs"
   packages = ["vfsutil"]
+  pruneopts = "UT"
   revision = "809beceb23714880abc4a382a00c05f89d13b1cc"
 
 [[projects]]
   branch = "master"
+  digest = "1:da947121c0a7abeab824f2bf6732762af118aa17b292e2d77886921eeedd6c51"
   name = "github.com/shurcooL/vfsgen"
   packages = ["."]
+  pruneopts = "UT"
   revision = "33ae1944be3fe078a54c597f107e0867da19c713"
 
 [[projects]]
   branch = "master"
+  digest = "1:bf25f8f3b9daabf4b9987cf6c9fcbf559ba6142a3ac12900356333a787b56dae"
   name = "github.com/stretchr/stew"
   packages = ["slice"]
+  pruneopts = "UT"
   revision = "80ef0842b48b329a6120607c817a85aff5a2ec71"
 
 [[projects]]
+  digest = "1:18752d0b95816a1b777505a97f71c7467a8445b8ffb55631a7bf779f6ba4fa83"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
+  pruneopts = "UT"
   revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
   version = "v1.2.2"
 
 [[projects]]
+  digest = "1:b24d38b282bacf9791408a080f606370efa3d364e4b5fd9ba0f7b87786d3b679"
   name = "github.com/urfave/cli"
   packages = ["."]
+  pruneopts = "UT"
   revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
   version = "v1.20.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:1d18232beafad93272158a9e9810f417b418c2f967e0506f3e2609c10310fe31"
   name = "golang.org/x/crypto"
   packages = [
     "pkcs12",
-    "pkcs12/internal/rc2"
+    "pkcs12/internal/rc2",
   ]
+  pruneopts = "UT"
   revision = "614d502a4dac94afa3a6ce146bd1736da82514c6"
 
 [[projects]]
   branch = "master"
+  digest = "1:76ee51c3f468493aff39dbacc401e8831fbb765104cbf613b89bef01cf4bad70"
   name = "golang.org/x/net"
   packages = ["context"]
+  pruneopts = "UT"
   revision = "8a410e7b638dca158bf9e766925842f6651ff828"
 
 [[projects]]
+  digest = "1:e2f64cca6e235f32cd4c2f9be9ae0cda1f8608fc6fdb68936e8d10e4e0bb074d"
   name = "gopkg.in/go-playground/validator.v9"
   packages = ["."]
+  pruneopts = "UT"
   revision = "e69e9a28bb62b977fdc58d051f1bb477b7cbe486"
   version = "v9.21.0"
 
 [[projects]]
+  digest = "1:342378ac4dcb378a5448dd723f0784ae519383532f5e70ade24132c4c8693202"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
+  pruneopts = "UT"
   revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
   version = "v2.2.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "777d6899744a13c609becafe9890c48f986ef18be844f4d2b2a5b84ee027c18b"
+  input-imports = [
+    "github.com/Azure/azure-sdk-for-go/services/resources/mgmt/2018-02-01/resources",
+    "github.com/Azure/azure-sdk-for-go/services/storage/mgmt/2017-06-01/storage",
+    "github.com/Azure/azure-sdk-for-go/storage",
+    "github.com/Azure/azure-storage-blob-go/2018-03-28/azblob",
+    "github.com/Azure/go-autorest/autorest",
+    "github.com/Azure/go-autorest/autorest/azure",
+    "github.com/Azure/go-autorest/autorest/azure/auth",
+    "github.com/Azure/go-autorest/autorest/to",
+    "github.com/MakeNowJust/heredoc",
+    "github.com/bouk/monkey",
+    "github.com/go-ozzo/ozzo-validation",
+    "github.com/go-ozzo/ozzo-validation/is",
+    "github.com/golang/mock/gomock",
+    "github.com/hashicorp/hcl",
+    "github.com/hashicorp/logutils",
+    "github.com/olekukonko/tablewriter",
+    "github.com/rs/xid",
+    "github.com/shurcooL/vfsgen",
+    "github.com/stretchr/stew/slice",
+    "github.com/stretchr/testify/assert",
+    "github.com/urfave/cli",
+    "gopkg.in/go-playground/validator.v9",
+    "gopkg.in/yaml.v2",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
