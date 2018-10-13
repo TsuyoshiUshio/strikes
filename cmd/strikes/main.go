@@ -13,7 +13,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "Lightning Strikes"
 	app.Usage = "The Azure Functions Package management tool"
-	app.Version = "0.0.4"
+	app.Version = "0.0.5"
 	app.Commands = []cli.Command{
 		{
 			Name:    "init",
@@ -54,6 +54,10 @@ func main() {
 				cli.BoolFlag{
 					Name:  "ignorePowerPlant, i",
 					Usage: "Does not upload metadata to powerplant. Used for testing purpose.",
+				},
+				cli.StringFlag{
+					Name:  "set, s",
+					Usage: "Override the default parameters which is on circuit/values.hcl",
 				},
 			},
 		},

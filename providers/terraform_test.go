@@ -30,11 +30,8 @@ func TestParseValuesHCL(t *testing.T) {
 
 func TestParseArgsNormalCase(t *testing.T) {
 	args := []string{
-		"--set",
 		"foo=bar",
-		"--set",
 		"bar=foo",
-		"foobar",
 	}
 	result, err := parseValuesArgs(args)
 	assert.Nil(t, err)
@@ -46,9 +43,7 @@ func TestParseArgsNormalCase(t *testing.T) {
 func TestParseArgsWorngParameterCase(t *testing.T) {
 	ExpectedError := "Parameter can not parse. : foobar"
 	args := []string{
-		"--set",
 		"foobar",
-		"--set",
 		"foo=bar",
 	}
 
@@ -68,11 +63,8 @@ func TestConfigureValues(t *testing.T) {
 	ExpectedResourceGroup := "bar"
 	ExpectedPackageSubDir := "foo/2.0.0/bar.zip"
 	args := []string{
-		"--set",
 		"environment_base_name=" + ExpectedEnvironmentBaseName,
-		"--set",
 		"packages_sub_dir=" + ExpectedPackageSubDir,
-		"bar",
 	}
 	m := make(map[string]string)
 	m["environment_base_name"] = "foobar"

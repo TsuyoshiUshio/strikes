@@ -18,7 +18,7 @@ import (
 )
 
 type Provider interface {
-	CreateResource(args []string, instanceName string) *DeploymentResult
+	CreateResource(args []string, instanceName string, overrideParameters []string) *DeploymentResult
 }
 
 type TerraformProvider struct {
@@ -59,7 +59,7 @@ func (t *TerraformProvider) IsProviderCommandExists() bool {
 	return true
 }
 
-func (t *TerraformProvider) CreateResource(args []string, instanceName string) *DeploymentResult {
+func (t *TerraformProvider) CreateResource(args []string, instanceName string, overrideParameters []string) *DeploymentResult {
 	if !t.IsProviderCommandExists() {
 		log.Fatalf("Can not find the terraform command on your path. Please check if it is on your Path environment variables")
 	}
@@ -70,7 +70,7 @@ func (t *TerraformProvider) CreateResource(args []string, instanceName string) *
 	t.executeTerraformCommand("init", []string{}, []string{}, false)
 
 	// translate parameter fit for terraformf parameters
-	argsParameters, configrations := t.composeTerraformParameter(args, instanceName)
+	argsParameters, configrations := t.composeTerraformParameter(overrideParameters, instanceName)
 	// then append terraform options.
 	optionalParameters := []string{
 		"-input=false",
@@ -161,23 +161,14 @@ func configureValues(values *map[string]string, args []string) (*map[string]stri
 }
 
 func parseValuesArgs(args []string) (*map[string]string, error) {
-	flag := false
 	m := make(map[string]string)
 	for _, arg := range args {
-		if flag {
-			keyValue := strings.Split(arg, "=")
-			if len(keyValue) != 2 {
-				log.Fatalf("Parameter can not parse. : %v\n", arg)
-				return nil, errors.New("Parameter can not parse. : " + arg)
-			}
-			m[keyValue[0]] = keyValue[1]
+		keyValue := strings.Split(arg, "=")
+		if len(keyValue) != 2 {
+			log.Fatalf("Parameter can not parse. : %v\n", arg)
+			return nil, errors.New("Parameter can not parse. : " + arg)
 		}
-		if arg == "--set" {
-			flag = true
-		} else {
-			flag = false
-		}
-
+		m[keyValue[0]] = keyValue[1]
 	}
 	return &m, nil
 }

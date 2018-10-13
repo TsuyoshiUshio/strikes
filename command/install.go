@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/TsuyoshiUshio/strikes/config"
 	"github.com/TsuyoshiUshio/strikes/helpers"
@@ -72,8 +73,8 @@ func (rc *RemotePackageCommand) Execute(packageName, instanceName string, c *cli
 	}
 
 	// Execute deployment using Provider.
-	provider := providers.NewTerraformProvider(manifest, targetDirPath) //targetDirPath is here or adding one deep directory
-	result := provider.CreateResource(c.Args().Tail(), instanceName)    // The first one is the package name.
+	provider := providers.NewTerraformProvider(manifest, targetDirPath)                                   //targetDirPath is here or adding one deep directory
+	result := provider.CreateResource(c.Args().Tail(), instanceName, convertToStringArray(c.String("s"))) // The first one is the package name.
 
 	// Update the PowerPlant
 	instance := storage.StrikesInstance{
@@ -127,7 +128,7 @@ func (rc *LocalPackageCommand) Execute(packageName, instanceName string, c *cli.
 	if err != nil {
 		return err
 	} //targetDirPath is here or adding one deep directory
-	result := provider.CreateResource(args, instanceName) // The first one is the package name.
+	result := provider.CreateResource(args, instanceName, convertToStringArray(c.String("s"))) // The first one is the package name.
 
 	instance := storage.StrikesInstance{
 		InstanceID:        xid.New().String(), // Automatically generated xid sortable. more detail https://github.com/rs/xid
@@ -170,8 +171,8 @@ func outputNote(targetDirPath, resourceGroup, instanceName string, w io.Writer) 
 		return err
 	}
 	parameter := NoteParameters{
-		ResourceGroupTemplate: resourceGroup,
-		AzureFunctionsTemplate: instanceName + "app.azurewebsites.net",
+		ResourceGroupTemplate:       resourceGroup,
+		AzureFunctionsTemplate:      instanceName + "app.azurewebsites.net",
 		EnvironmentBaseNameTemplate: instanceName,
 	}
 	content, err := ioutil.ReadAll(file)
@@ -293,4 +294,11 @@ func cleanUpStrikesTemp() {
 		log.Fatalf("Can not delete .strikesTemp. as clean up : %v\n", err)
 		return
 	}
+}
+
+func convertToStringArray(s string) []string {
+	if s == "" {
+		return []string{}
+	}
+	return strings.Split(s, ",")
 }
