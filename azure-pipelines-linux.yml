@@ -47,6 +47,12 @@ steps:
   workingDirectory: '$(modulePath)'
   displayName: 'Run unit test'
 
+- script: |
+    go get -v -u github.com/laher/goxc
+    go get -v -u github.com/tcnksm/ghr
+    goxc
+  workingDirectory: '$(modulePath)/cmd/strikes'
+  displayName: 'Cross platform build'
 - task: PublishTestResults@2
   inputs:
     testRunner: JUnit
