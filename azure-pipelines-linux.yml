@@ -25,6 +25,8 @@ steps:
   displayName: 'Set up the Go workspace'
 
 - script: |
+    pwd
+    ls -la
     go version
     go get -v -t -d ./...
     if [ -f Gopkg.toml ]; then
@@ -50,6 +52,7 @@ steps:
 
 - script: |
     go get github.com/laher/goxc
+    cp $(system.defaultWorkingDirectory)/.goxc.json .
     pwd
     ls -la 
     cat .goxc.json
