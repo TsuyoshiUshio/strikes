@@ -50,7 +50,7 @@ steps:
 
 - script: |
     go get github.com/laher/goxc
-    goxc -wd=.
+    goxc -wd=$(modulePath)
   workingDirectory: '$(modulePath)'
   displayName: 'Create a multi platform build'
 
