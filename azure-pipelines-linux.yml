@@ -49,9 +49,8 @@ steps:
   displayName: 'Run unit test'
 
 - script: |
-    export PATH=$PATH:.
     go get github.com/laher/goxc
-    goxc 
+    goxc -wd=.
   workingDirectory: '$(modulePath)'
   displayName: 'Create a multi platform build'
 
