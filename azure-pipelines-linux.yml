@@ -49,6 +49,7 @@ steps:
   displayName: 'Run unit test'
 
 - script: |
+    export PATH=$PATH:.
     go get github.com/laher/goxc
     goxc 
   workingDirectory: '$(modulePath)'
