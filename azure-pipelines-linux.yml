@@ -47,6 +47,12 @@ steps:
   workingDirectory: '$(modulePath)'
   displayName: 'Run unit test'
 
+- script: |
+    go get github.com/laher/goxc
+    goxc -main-dirs-exclude=vendor,spikes,template
+  workingDirectory: '$(modulePath)'
+  displayName: 'Create a multi platform build'
+
 - task: PublishTestResults@2
   inputs:
     testRunner: JUnit
@@ -57,3 +63,8 @@ steps:
     codeCoverageTool: Cobertura 
     summaryFileLocation: $(System.DefaultWorkingDirectory)/**/coverage.xml
     reportDirectory: $(System.DefaultWorkingDirectory)/**/coverage
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: $(System.DefaultWorkingDirectory)/dist/snapshot/*
+    artifactName: drop

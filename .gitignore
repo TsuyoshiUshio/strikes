@@ -10,3 +10,5 @@ coverage.html
 .DS_Store
 
 .strikesTemp
+
+dist
