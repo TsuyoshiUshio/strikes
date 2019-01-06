@@ -73,5 +73,5 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-    pathtoPublish: $(modulePath)/dist/snapshot/*
+    pathtoPublish: $(modulePath)/dist/snapshot/
     artifactName: drop
