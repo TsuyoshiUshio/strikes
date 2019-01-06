@@ -50,6 +50,8 @@ steps:
 - script: |
     go get github.com/laher/goxc
     goxc -main-dirs-exclude=vendor,spikes,template
+    pwd
+    ls -l
   workingDirectory: '$(modulePath)'
   displayName: 'Create a multi platform build'
 
