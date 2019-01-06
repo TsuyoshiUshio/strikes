@@ -73,5 +73,5 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-    pathtoPublish: $(System.DefaultWorkingDirectory)/dist/snapshot/*
+    pathtoPublish: $(modulePath)/dist/snapshot/*
     artifactName: drop
