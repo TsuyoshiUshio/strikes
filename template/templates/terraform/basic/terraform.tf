@@ -74,7 +74,7 @@ resource "azurerm_storage_account" "test" {
   location                 = "${azurerm_resource_group.test.location}"
   account_tier             = "Standard"
   account_replication_type = "LRS"
-  depends_on = ["random_string.suffix"]
+  depends_on = ["random_string.suffix", "azurerm_resource_group.test"]
 }
 
 resource "azurerm_app_service_plan" "test" {
@@ -87,6 +87,7 @@ resource "azurerm_app_service_plan" "test" {
     tier = "Dynamic"
     size = "Y1"
   }
+    depends_on = ["azurerm_resource_group.test"]
 }
 
 resource "azurerm_application_insights" "test" {
@@ -94,13 +95,8 @@ resource "azurerm_application_insights" "test" {
   location            = "eastus"
   resource_group_name = "${azurerm_resource_group.test.name}"
   application_type    = "Web"
-}
-
-# CosmosDB
-
-resource "random_integer" "ri" {
-    min = 10000
-    max = 99999
+  
+  depends_on = ["azurerm_resource_group.test"]
 }
 
 resource "azurerm_function_app" "test" {
