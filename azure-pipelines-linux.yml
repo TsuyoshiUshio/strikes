@@ -49,7 +49,7 @@ steps:
 
 - script: |
     go get github.com/laher/goxc
-    goxc -main-dirs-exclude=vendor,spikes,template
+    goxc -main-dirs-exclude=vendor,spikes,template,integration
     pwd
     ls -l
   workingDirectory: '$(modulePath)'

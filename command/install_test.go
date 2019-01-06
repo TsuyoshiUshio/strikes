@@ -31,7 +31,7 @@ func TestOutputNote(t *testing.T) {
 	Please refer these resources: 
 	
 	Resource Group  : foo
-	Azure Functions : barapp.azurewebsites.net
+	Azure Functions : barapp.azurewebsites.net
 	
 	Go to https://barapp.azurewebsites.net/api/HelloWorld
 	
