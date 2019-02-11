@@ -1,1 +1,1 @@
-Test Release for testing Azure DevOps.
+Enabling automatic release for various binaries using Azure DevOps
