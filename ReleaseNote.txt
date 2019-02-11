@@ -1,1 +1,1 @@
-Sample Release for testing
+Test Release for testing Azure DevOps.
