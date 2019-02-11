@@ -85,3 +85,8 @@ steps:
   inputs:
     pathtoPublish: $(modulePath)/dist/snapshot/
     artifactName: drop
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: $(modulePath)/ReleaseNote.txt
+    artifactName: releaseNote
